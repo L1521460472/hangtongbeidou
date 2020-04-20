@@ -8,7 +8,7 @@ Vue.use(ElementUI)
 
 export default new Vuex.Store({
   state: {
-
+    
   },
   mutations: {
 
