@@ -4,11 +4,11 @@
             <el-header>
                 <top-bar></top-bar>
             </el-header>
-            <el-container>
-                <el-aside style="width:200px">
+            <el-container style="height: calc(100% - 48px);">
+                <el-aside style="width:200px;min-height:705px;">
                     <menu-nav></menu-nav>
                 </el-aside>
-                <el-mian style="width:calc(100% - 200px);background: #000;">
+                <el-mian style="width:calc(100% - 200px);background: #000;min-height:705px;">
                     <keep-alive>
                       <router-view />
                     </keep-alive>                   

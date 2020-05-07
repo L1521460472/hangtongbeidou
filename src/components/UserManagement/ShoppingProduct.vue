@@ -10,43 +10,101 @@
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)"
               :data="dataList"
-              style="width: 100%;height:570px"
-              max-height="590"
+              style="width: 100%;"
             >
               <el-table-column
-                prop="products"
+                prop="name"
                 label="充值产品"
-              ></el-table-column>
+              >
+                <!-- <template slot-scope="scope">
+                  <span
+                    v-if="scope.row.status == 0"
+                    style="opacity:0.8;"
+                    >{{ scope.row.name }}</span
+                  >
+                  <span
+                    v-if="scope.row.status == 1"
+                    style="opacity:0.2;"
+                    >{{ scope.row.name }}</span
+                  >
+                </template> -->
+              </el-table-column>
               <el-table-column
-                prop="price"
+                prop="money"
                 min-width="100"
                 label="设定金额/元"
-              ></el-table-column>
+              >
+                <!-- <template slot-scope="scope">
+                  <span
+                    v-if="scope.row.status == 0"
+                    style="opacity:0.8;"
+                    >{{ scope.row.money }}</span
+                  >
+                  <span
+                    v-if="scope.row.status == 1"
+                    style="opacity:0.2;"
+                    >{{ scope.row.money }}</span
+                  >
+                </template> -->
+              </el-table-column>
               <el-table-column
-                prop="discounts"
-                label="优惠折扣"
-              ></el-table-column>
+                label="优惠折扣">
+                <template slot-scope="scope">
+                  <span
+                    v-if="scope.row.discount == 1"
+                    >无</span
+                  >
+                  <span
+                    v-if="scope.row.discount == 0.8"
+                    >8折</span
+                  >
+                </template>
+              </el-table-column>
               <el-table-column
-                prop="reality"
+                prop="amount"
                 label="实际扣费"
-              ></el-table-column>
+              >
+                <!-- <template slot-scope="scope">
+                  <span
+                    v-if="scope.row.status == 0"
+                    style="opacity:0.8;"
+                    >{{ scope.row.amount }}</span
+                  >
+                  <span
+                    v-if="scope.row.status == 1"
+                    style="opacity:0.2;"
+                    >{{ scope.row.amount }}</span
+                  >
+                </template> -->
+              </el-table-column>
               <el-table-column
-                prop="time_end"
+                prop="update_time"
                 min-width="160"
                 label="最后更新时间"
-              ></el-table-column>
+              >
+                <!-- <template slot-scope="scope">
+                  <span
+                    v-if="scope.row.status == 0"
+                    style="opacity:0.8;"
+                    >{{ scope.row.update_time }}</span
+                  >
+                  <span
+                    v-if="scope.row.status == 1"
+                    style="opacity:0.2;"
+                    >{{ scope.row.update_time }}</span
+                  >
+                </template> -->
+              </el-table-column>
               <el-table-column label="状态">
                 <template slot-scope="scope">
                   <span
-                    v-if="scope.row.state == 1"
+                    v-if="scope.row.status == 0"
                     style="opacity:0.8;"
-                    class="stated"
                     >已启用</span
                   >
                   <span
-                    v-if="scope.row.state == 0"
+                    v-if="scope.row.status == 1"
                     style="opacity:0.2;"
-                    class="stated"
                     >已禁用</span
                   >
                 </template>
@@ -55,9 +113,17 @@
                 <template slot-scope="scope">
                   <span
                     class="particulars"
+                    v-if="scope.row.status == 0"
                     @click="handleDisable(scope.$index, scope.row)"
                   >
-                    {{ scope.row.operation }}
+                    禁用
+                  </span>
+                  <span
+                    class="particulars"
+                    v-if="scope.row.status == 1"
+                    @click="handleDisable(scope.$index, scope.row)"
+                  >
+                    启用
                   </span>
                   <span
                     class="message"
@@ -75,6 +141,7 @@
 </template>
 <script>
 import axios from 'axios';
+import {getCookie} from '../../public'
 export default {
   name: "ShoppingProduct",
   data() {
@@ -84,14 +151,15 @@ export default {
       dialogFormVisible: false,
       form: {
         name: "",
-        region_discounts: "无",
-        region_state: "启用",
+        discount: "",
+        status: "",
+        operation:'',
         date1: "",
         date2: "",
         delivery: false,
         type: [],
         resource: "",
-        desc: ""
+        desc: "",
       },
       formLabelWidth: "120px",
       loading: true,
@@ -100,23 +168,30 @@ export default {
   methods: {
     handleDisable(index, row) {
       // var _this = this;
-      console.log(index, row);
-      if (row.operation == "禁用") {
+      // console.log(index, row);
+      if (row.status == 0) {
         this.$confirm("确定要禁用当前产品？", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
           .then(() => {
-            console.log(index)
-            axios.post('/rest/ShoppingProduct',{
-              id : index,
-              state : "0",
-              operation : "启用",
+            // console.log(index)
+            axios({
+              method: "post",
+              url: "/rest/chargeapi/sysProductController/modify",
+              headers: {
+                Authorization: getCookie(1001)
+              },
+              data: {
+                id: index + 1,
+                status: 1,
+              }
             }).then((result)=>{
-              console.log(result)
-              row.state = "0";
-              row.operation = "启用";
+              // console.log(result.data)
+              row.status = result.data.data.status;
+              // console.log(row.state)
+              row.update_time = result.data.data.update_time;
               this.$message({
                 type: "success",
                 message: "禁用成功!",
@@ -140,13 +215,28 @@ export default {
           type: "warning"
         })
           .then(() => {
-            row.state = "1";
-            row.operation = "禁用";
-            this.$message({
-              type: "success",
-              message: "启用成功!",
-              center: true
-            });
+            axios({
+              method: "post",
+              url: "/rest/chargeapi/sysProductController/modify",
+              headers: {
+                Authorization: getCookie(1001)
+              },
+              data: {
+                id: index + 1,
+                status: 0,
+              }
+            }).then((result)=>{
+              // console.log(result.data)
+              row.status = result.data.data.status;
+              row.update_time = result.data.data.update_time;
+              this.$message({
+                type: "success",
+                message: "启用成功!",
+                center: true
+              });
+            }).catch((err)=>{
+              console.error(err);
+            })
           })
           .catch(() => {
             this.$message({
@@ -158,7 +248,7 @@ export default {
       }
     },
     handleModification(index, row) {
-      console.log(index, row);
+      // console.log(index, row);
       const h = this.$createElement;
       this.$msgbox({
         title: "消息",
@@ -172,11 +262,6 @@ export default {
             h("option", {style:'background:#313131;'}, "8折")
           ]),
           h("p", {style:'margin-bottom:1px'}, ""),
-          h("span", { style: "font-size:12px;color:rgba(255,255,255,0.8);margin-right:10px;display: inline-block;width:80px;height:30px;text-align: right;" }, "状态"),
-          h("select", { class:'select02', style: "width:138px;height:28px;background-color:rgba(10,10,10,0.4);border:1px solid rgba(164,164,164,0.4);color:rgba(255,255,255,0.8)" }, [
-            h("option", {style:'background:#313131;'}, "启用"),
-            h("option", {style:'background:#313131;'}, "禁用")
-          ])
         ]),
         showCancelButton: true,
         confirmButtonText: "确定",
@@ -190,20 +275,39 @@ export default {
         });
           return
         }else{
-          row.price = document.getElementsByClassName('input')[0].value;
-          row.discounts = document.getElementsByClassName('select01')[0].value;
-          row.operation = document.getElementsByClassName('select02')[0].value;
-          document.getElementsByClassName('input')[0].value = '';
-          if(row.operation == '启用'){
-              row.state = "0";
-          }else{
-              row.state = "1";
+          var select01Value = document.getElementsByClassName('select01')[0].value;
+          // this.operation = document.getElementsByClassName('select02')[0].value;
+          if( select01Value == '无'){
+            this.discount = 1;
+          }else if(select01Value == '8折'){
+            this.discount = 0.8;
           }
-        this.$message({
-          type: "success",
-          message: "修改成功!",
-          center: true
-        });
+          axios({
+              method: "post",
+              url: "/rest/chargeapi/sysProductController/modify",
+              headers: {
+                Authorization: getCookie(1001)
+              },
+              data: {
+                id: index + 1,
+                money: document.getElementsByClassName('input')[0].value,
+                discount:this.discount,
+              }
+            }).then((result)=>{
+              console.log(result.data)
+            row.money = result.data.data.money;
+            row.discount = result.data.data.discount;
+            row.amount = result.data.data.amount;
+            row.update_time = result.data.data.update_time;
+            document.getElementsByClassName('input')[0].value = '';
+            this.$message({
+              type: "success",
+              message: "修改成功!",
+              center: true
+            });
+          }).catch((err)=>{
+            console.log(err);
+          })
         }          
       }).catch(()=>{
         this.$message({
@@ -212,15 +316,38 @@ export default {
           center: true
         });
       });
+    },
+    getDateString(date){ //转换时间格式
+      var year = date.getFullYear();
+      var month = (date.getMonth() + 1).toString();
+      var day = date.getDate().toString();
+      var time = new Date().toTimeString().substring(0,8);
+      if (month.length == 1) {
+        month = "0" + month;
+      }
+      if (day.length == 1) {
+        day = "0" + day;
+      }
+      var dateTime = year + "-" + month + "-" + day + ' ' + time;
+      return dateTime;
     }
   },
   mounted() {
-    axios.post('/rest/ShoppingProduct')
-    .then((result)=>{
-      if(result.status === 200){
-        this.loading = false;
-        this.dataList = result.data;
+    axios({
+      method:'post',
+      url:'/rest/chargeapi/sysProductController/chargeTypeList',
+      headers:{
+        Authorization:getCookie(1001),
+      },
+      data:{
+        pageNum:1,
+        pageSize:10
       }
+    })
+    .then((result)=>{
+      // console.log(result.data)
+      this.loading = false;
+      this.dataList = result.data.data.chargeTypeList;
     })
     .catch((err)=>{
       this.loading = false;
@@ -236,6 +363,7 @@ export default {
 }
 .header {
   width: 100%;
+  min-width:1116px;
   height: 100%;
   box-sizing: border-box;
   padding: 16px;
@@ -264,7 +392,7 @@ export default {
   color: #51d4ff;
   cursor: pointer;
 }
-.state {
+.statedd {
   color: #fff;
   opacity: 0.8;
 }

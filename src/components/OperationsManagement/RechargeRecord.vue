@@ -4,8 +4,8 @@
       <el-row>
         <el-col :span="24">
           <div class="header_nav">
-            <div class="header_select">
-              <div style="width:100%;height:50%">
+            <!-- <div class="header_nav_list"> -->
+              <!-- <div class="header_select">
                 <span>选择区域</span>
               <el-select v-model="value01" placeholder="请选择">
                 <el-option
@@ -16,62 +16,42 @@
                 >
                 </el-option>
               </el-select>
-              </div>
-              <div style="width:100%;height:40%">
-                <span>开始时间</span>
+            </div> -->
+            <div class="header_data">
+              <span class="demonstration">开始时间</span>
               <el-date-picker
                 v-model="value_start"
                 type="date"
-                placeholder="选择日期"
+                placeholder="请选择开始时间"
+                :picker-options="pickerOptions"
               >
               </el-date-picker>
-              </div>
-            </div>
-            <div class="header_select">
-              <div style="width:100%;height:40%">
-                <span>站点名称</span>
-              <el-select v-model="value02" placeholder="请选择">
-                <el-option
-                  v-for="item in options02"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-              </div>
-              <div style="width:100%;height:40%">
-                <span>结束时间</span>
+              <span id="demonstration" class="demonstration">至</span>
               <el-date-picker
                 v-model="value_end"
                 type="date"
-                placeholder="选择日期"
+                placeholder="请选择结束时间"
+                :picker-options="pickerOptions"
               >
               </el-date-picker>
-              </div>
             </div>
             <div class="header_select">
-              <!-- <div style="width:100%;height:40%">
-                <span>订单类型</span>
-              <el-select v-model="value03" placeholder="请选择">
-                <el-option
-                  v-for="item in options03"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-              </div> -->
-              <div style="width:100%;height:40%">
-                <span id="span">开始时间</span>
+                <span>站点名称</span>
+              <el-input
+                v-model="input0"
+                placeholder="请输入站点名称"
+                clearable
+              ></el-input>
+            </div>
+            <div class="header_select">
+                <span>订单号</span>
               <el-input
                 v-model="input"
-                placeholder="输入订单号/车牌号"
+                placeholder="请输入订单号"
                 clearable
               ></el-input>
               </div>
-            </div>
+            <!-- </div> -->
             <div class="header_button">
               <button @click="search_table">查询</button>
             </div>
@@ -84,96 +64,89 @@
       <el-row>
         <el-col :span="24">
           <div class="footer_nav">
-              <el-table
+              <div class="footer_informatian">
+                <el-table
                 v-loading="loading"
                 element-loading-text="拼命加载中"
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
                 :data="
-                  dataList.slice(
-                    (currentPage - 1) * pagesize,
-                    currentPage * pagesize
-                  )
+                  dataList
                 "
-                style="width: 100%;height:570px"
-                max-height="590"
+                style="width: 100%;height:100%"
               >
                 <el-table-column
-                  prop="order_number"
-                  min-width="120"
+                  prop="order_no"
+                  min-width="130"
                   label="订单号"
                 ></el-table-column>
                 <el-table-column
-                  prop="service_number"
-                  min-width="110"
+                  prop="service_no"
+                  min-width="125"
                   label="服务单号"
                 ></el-table-column>
                 <el-table-column
-                  prop="site_name"
+                  prop="station_name"
                   min-width="130"
                   label="站点名称"
                 ></el-table-column>
                 <el-table-column
-                  prop="stake_mark"
-                  min-width="90"
+                  prop="device_sn"
+                  min-width="135"
                   label="桩号"
                 ></el-table-column>
                 <el-table-column
-                  prop="device_type"
-                  min-width="80"
-                  label="设备类型"
-                ></el-table-column>
-                <el-table-column
-                  prop="gun_numble"
+                  prop="nozzle_no"
                   min-width="80"
                   label="枪号"
                 ></el-table-column>
                 <el-table-column
-                  prop="time_start"
-                  min-width="160"
+                  prop="start_time"
+                  min-width="150"
                   label="充电开始时间"
                 ></el-table-column>
                 <el-table-column
-                  prop="time_end"
-                  min-width="160"
+                  prop="end_time"
+                  min-width="150"
                   label="充电结束时间"
                 ></el-table-column>
                 <el-table-column
-                  prop="charging_time"
+                  prop="timelen"
                   min-width="100"
                   label="充电时长/分钟"
                 ></el-table-column>
                 <el-table-column
-                  prop="charging_amount"
-                  min-width="80"
-                  label="充电量/度"
+                  prop="degree"
+                  min-width="90"
+                  label="充电电量/度"
                 ></el-table-column>
                 <el-table-column
-                  prop="electricity"
+                  prop="charge_money"
                   min-width="90"
                   label="充电电费/元"
                 ></el-table-column>
                 <el-table-column
-                  prop="service"
+                  prop="fee"
                   min-width="80"
                   label="服务费/元"
                 ></el-table-column>
                 <el-table-column
-                  prop="tatol"
+                  prop="pay_money"
                   min-width="80"
                   label="总费用/元"
                 ></el-table-column>
                 <el-table-column
-                  prop="preferential"
+                  prop="deduct"
                   min-width="90"
                   label="优惠金额/元"
                 ></el-table-column>
                 <el-table-column
-                  prop="payment"
+                  prop="actual_pay"
                   min-width="90"
                   label="实付金额/元"
                 ></el-table-column>
               </el-table>
+              </div>
 
               <div class="footer_page">
                 <el-pagination
@@ -184,7 +157,7 @@
                   :page-size="pagesize"
                   :pager-count="5"
                   layout="total, sizes, prev, pager, next, jumper"
-                  :total="dataList.length"
+                  :total="total"
                 >
                 </el-pagination>
               </div>
@@ -196,56 +169,24 @@
 </template>
 <script>
 import axios from 'axios';
+import {getCookie,dateToString} from '../../public'
 export default {
   name: "RechargeRecord",
   data() {
     return {
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now() - 8.64e6; //如果没有后面的-8.64e6就是不可以选择今天的
+        },
+      },
       options01: [
         {
-          value: "选项1",
-          label: "黄金糕"
+          value: "1",
+          label: "深圳市"
         },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
       ],
-      value01: "",
-      options02: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
-      value02: "",
+      value01: "1",
+      input0:"",
       input: "",
       value_start: "",
       value_end: "",
@@ -254,73 +195,92 @@ export default {
       currentPage: 1,
       pagesize: 10,
       loading: true,
+      total:10
     };
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
       this.pagesize = val;
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
     search_table(){
-      if(this.input == '' && this.value_end == '' && this.value_start == '' && this.value02 == '' && this.value01 == ''){
-        this.$message.warning('查询条件不能为空');
-        return;
+      //判断是否输入日期
+      if(this.value_start == '' || this.value_start == null){
+        this.value_start = ''
+      }else{
+        if(this.value_start.length == 10){
+          this.value_start = this.value_start;
+        }else{
+          this.value_start = dateToString(this.value_start);
+        }
       }
-      axios.post("/rest/RechargeRecord",{
-        //{}给后台传的参数写在这
+      if(this.value_end == '' || this.value_end == null){
+        this.value_end = ''
+      }else{
+        if(this.value_end.length == 10){
+          this.value_end = this.value_end;
+        }else{
+          this.value_end = dateToString(this.value_end);
+        }
+      } 
+      //发送请求
+      axios({
+        method:'post',
+        url:'/rest/chargeapi/sysOrderController/chargeList',
+        headers:{
+          Authorization:getCookie(1001),
+        },
+        data:{
+          // city_id: '',
+          station_name: this.input0,
+          order_no: this.input,
+          startDate: this.value_start,
+          endDate: this.value_end,
+          pageNum:1,
+          pageSize:10
+        }
       })
       .then((result)=>{
-        console.log(result)
-        if(result.status === 200){
-          this.loading = false;
-          this.result_data = result.data;
-          this.dataList = [];
-          this.result_data.forEach(value => {
-            if(value.order_number == this.input){
-              this.dataList.push(value)
-            }
-          // else if(this.dateToString(this.value_start) == value.time_start.substring(0,10) && this.dateToString(this.value_end) == value.time_end.substring(0,10)){
-          //   this.dataList.push(value)
-          // }
-        });
-        this.value01 = '';
-        this.value02 = '';
-        this.value_start = '';
-        this.value_end = '';
-        this.input = '';
-        }else{
-          this.$message.warning('暂无数据');
-        }
+        // console.log(result.data)
+        this.loading = false;
+        this.dataList = result.data.data.chargeList;
+        this.total = result.data.data.totalNum;
+        this.pagesize = result.data.data.pageSize;
+        this.currentPage = result.data.data.pageNum;
+
+        // this.input1 = '';
+        // this.value_start = '';
+        // this.value_end = '';
       })
       .catch((err)=>{
         this.loading = false;
-        console.error(err)
+        console.error(err);
       })
-    },
-      dateToString(date) {
-      //日期转字符串
-      var year = date.getFullYear();
-      var month = (date.getMonth() + 1).toString();
-      var day = date.getDate().toString();
-      if (month.length == 1) {
-        month = "0" + month;
-      }
-      if (day.length == 1) {
-        day = "0" + day;
-      }
-      var dateTime = year + "-" + month + "-" + day;
-      return dateTime;
     },
   },
   mounted() {
-    axios.post('/rest/RechargeRecord')
+    axios({
+      method:'post',
+      url:'/rest/chargeapi/sysOrderController/chargeList',
+      headers:{
+        Authorization:getCookie(1001),
+      },
+      data:{
+        pageNum:1,
+        pageSize:10
+      }
+    })
     .then((result)=>{
+      // console.log(result.data)
       this.loading = false;
-      this.dataList = result.data;
+      this.dataList = result.data.data.chargeList;
+      this.total = result.data.data.totalNum;
+      this.pagesize = result.data.data.pageSize;
+      this.currentPage = result.data.data.pageNum;
     })
     .catch((err)=>{
       this.loading = false;
@@ -334,11 +294,21 @@ export default {
   width: 100%;
   height: 100%;
 }
-.header {
+/* .header {
   width: 100%;
-  height: 20%;
+  min-width:1116px;
+  height: 182px;
   box-sizing: border-box;
   padding: 16px;
+  background: #000;
+} */
+.header {
+  width: 100%;
+  min-width:1116px;
+  height: 112px;
+  box-sizing: border-box;
+  padding: 16px;
+  background: #000;
 }
 .el-row {
   width: 100%;
@@ -351,8 +321,35 @@ export default {
 .header_nav {
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
+  /* padding: 30px 20px; */
   background: #212121;
   border-radius: 6px;
+}
+.header_nav_list{
+  width: 90%;
+  height: 100%;
+  float: left;
+}
+.header_data {
+  width: 40%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding-left: 2%;
+  float: left;
+}
+#demonstration {
+  margin-left: 2%;
+}
+.demonstration {
+  font-size: 12px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  opacity: 0.8;
+  margin-right: 2%;
 }
 .sub-title {
   font-size: 12px;
@@ -366,16 +363,24 @@ export default {
 #span {
   opacity: 0;
 }
-.header_select {
-  width: 30%;
-  height: 100%;
-  padding: 2.5% 0;
+/*  //两行 */
+/* .header_select {
+  width: 25%;
+  height: 45px;
   display: flex;
-  flex-wrap: wrap;
-  align-content: space-between;
+  align-items: center;
   box-sizing: border-box;
-  padding-left: 4%;
   float: left;
+} */
+/*  //一行 */
+.header_select {
+  width: 22.5%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  float: left;
+  padding-left: 2%;
 }
 .header_select span{
   font-size: 12px;
@@ -384,22 +389,34 @@ export default {
   color: rgba(255, 255, 255, 1);
   opacity: 0.8;
   margin-right: 4%;
-  margin-top: 2%; 
 }
 .el-input {
-  width: 193px;
+  width: 160px;
 }
 .header_button {
-  align-items: flex-end !important;
   box-sizing: border-box;
-  padding-bottom: 3%;
+  float: right;
+  /* margin-top: 25px; */
+}
+.el-table__header >>> .el-table tr {
+  background: #212121 !important;
 }
 
 /* ------------ footer -------------- */
+/* .footer {
+  width: 100%;
+  min-width:1116px;
+  height: calc(100% - 182px);
+  box-sizing: border-box;
+  background: #000;
+  padding: 0 16px 16px 16px;
+} */
 .footer {
   width: 100%;
-  height: 80%;
+  min-width:1116px;
+  height: calc(100% - 112px);
   box-sizing: border-box;
+  background: #000;
   padding: 0 16px 16px 16px;
 }
 .footer_nav {
@@ -407,23 +424,24 @@ export default {
   height: 100%;
   background: #212121;
   border-radius: 6px;
+  overflow-y: auto;
 }
-.footer_informatian{
+.footer_informatian {
   width: 100%;
-  height: 100%;
-}
-.el-table__header >>> .el-table tr {
-  background: #212121 !important;
+  height: 85%;
+  overflow-y: auto;
 }
 .footer_page {
   width: 100%;
-  height: 40px;
+  height: 15%;
   display: flex;
   align-items: center;
   text-align: center;
+  justify-content: center;
 }
-.el-pagination {
-  margin-left: 25%;
-  font-weight: 400;
+.el-table >>> .el-table__body-wrapper{
+  width: 100%;
+  height: calc(100% - 48px);
+  overflow-y: auto;
 }
 </style>

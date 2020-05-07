@@ -8,6 +8,8 @@ import Echarts from "echarts";
 import 'echarts/extension/bmap/bmap';
 // import BaiduMap from 'vue-baidu-map'
 
+Vue.prototype.$EventBus = new Vue();
+
 Vue.use(ElementUI);
 Vue.use(Echarts);
 Vue.config.productionTip = false

@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="24">
           <div class="header_nav">
-            <div class="header_select">
+            <!-- <div class="header_select">
               <div class="sub-title">选择区域</div>
               <el-select v-model="value01" placeholder="请选择">
                 <el-option
@@ -15,12 +15,12 @@
                 >
                 </el-option>
               </el-select>
-            </div>
+            </div> -->
             <div class="header_select">
-              <div class="sub-title">站点名称</div>
-              <el-select v-model="value02" placeholder="请选择">
+              <div class="sub-title">订单状态</div>
+              <el-select v-model="value03" placeholder="请选择">
                 <el-option
-                  v-for="item in options02"
+                  v-for="item in options03"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -29,9 +29,18 @@
               </el-select>
             </div>
             <div class="header_select">
+              <div class="sub-title">站点名称</div>
+              <el-input
+                v-model="input0"
+                placeholder="请输入站点名称"
+                clearable
+              ></el-input>
+            </div>
+            <div class="header_select">
+              <div class="sub-title">订单号</div>
               <el-input
                 v-model="input"
-                placeholder="输入订单号/车牌号"
+                placeholder="请输入订单号"
                 clearable
               ></el-input>
             </div>
@@ -54,56 +63,47 @@
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
                 :data="
-                  dataList.slice(
-                    (currentPage - 1) * pagesize,
-                    currentPage * pagesize
-                  )
+                  dataList
                 "
-                style="width: 100%;height: 570px"
-                max-height="590"
+                style="width: 100%;height:100%"
               >
                 <el-table-column
-                  prop="order_number"
-                  min-width="120"
+                  prop="order_no"
+                  min-width="130"
                   label="订单号"
                 ></el-table-column>
                 <el-table-column
-                  prop="licence_plate"
-                  min-width="110"
+                  prop="service_no"
+                  min-width="125"
                   label="服务单号"
                 ></el-table-column>
                 <el-table-column
-                  prop="site_name"
-                  min-width="130"
+                  prop="station_name"
+                  min-width="120"
                   label="站点名称"
                 ></el-table-column>
                 <el-table-column
-                  prop="stake_mark"
-                  min-width="90"
+                  prop="device_sn"
+                  min-width="135"
                   label="桩号"
                 ></el-table-column>
                 <el-table-column
-                  prop="device_type"
-                  min-width="80"
-                  label="设备类型"
-                ></el-table-column>
-                <el-table-column
-                  prop="gun_numble"
+                  prop="nozzle_no"
                   min-width="80"
                   label="枪号"
                 ></el-table-column>
                 <el-table-column
-                  prop="time"
-                  min-width="160"
+                  prop="start_time"
+                  min-width="150"
                   label="充电时间"
                 ></el-table-column>
                 <el-table-column
-                  prop="electric_quantity"
+                  prop="degree"
                   min-width="90"
                   label="已充电量/度"
                 ></el-table-column>
                 <el-table-column
-                  prop="electric_charge"
+                  prop="pay_money"
                   min-width="80"
                   label="总费用/元"
                 ></el-table-column>
@@ -112,9 +112,55 @@
                   class="order_status"
                   min-width="80"
                   label="订单状态"
-                ></el-table-column>
+                >
+                <template slot-scope="scope">
+                  <span
+                    v-if="scope.row.order_status == 0"
+                    class="stated"
+                    >预订单</span
+                  >
+                  <span
+                    v-if="scope.row.order_status == 1"
+                    class="stated0"
+                    >启动异常</span
+                  >
+                  <span
+                    v-if="scope.row.order_status == 2"
+                    class="stated1"
+                    >充电中</span
+                  >
+                  <span
+                    v-if="scope.row.order_status == 3"
+                    class="stated2"
+                    >已完成</span
+                  >
+                  <span
+                    v-if="scope.row.order_status == 4"
+                    class="stated"
+                    >停止异常</span
+                  >
+                </template>
+                </el-table-column>
+                <el-table-column
+                  prop="order_status"
+                  class="order_status"
+                  min-width="80"
+                  label="支付状态"
+                >
+                <template slot-scope="scope">
+                  <span
+                    v-if="scope.row.status == 1"
+                    >未支付</span
+                  >
+                  <span
+                    v-if="scope.row.status == 2"
+                    >-</span
+                  >
+                </template>
+                </el-table-column>
               </el-table>
-              <div class="footer_page">
+            </div>
+            <div class="footer_page">
                 <el-pagination
                   @size-change="handleSizeChange"
                   @current-change="handleCurrentChange"
@@ -123,11 +169,10 @@
                   :page-size="pagesize"
                   :pager-count="5"
                   layout="total, sizes, prev, pager, next, jumper"
-                  :total="dataList.length"
+                  :total="total"
                 >
                 </el-pagination>
               </div>
-            </div>
           </div>
         </el-col>
       </el-row>
@@ -136,71 +181,69 @@
 </template>
 <script>
 import axios from "axios";
+import {getCookie} from '../../public'
 export default {
   name: "OrderManagement",
   data() {
     return {
       options01: [
         {
-          value: "选项1",
-          label: "黄金糕"
+          value: "",
+          label: "深圳市"
         },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
       ],
       value01: "",
-      options02: [
+      options03:[
         {
-          value: "选项1",
-          label: "黄金糕"
+          value: "",
+          label: "全部"
         },
         {
-          value: "选项2",
-          label: "双皮奶"
+          value: "1",
+          label: "启动异常"
         },
         {
-          value: "选项3",
-          label: "蚵仔煎"
+          value: "2",
+          label: "充电中"
         },
         {
-          value: "选项4",
-          label: "龙须面"
+          value: "3",
+          label: "已完成"
         },
         {
-          value: "选项5",
-          label: "北京烤鸭"
+          value: "4",
+          label: "停止异常"
         }
       ],
-      value02: "",
+      value03: "",
+      input0:"",
       input: "",
       dataList: [],
-      result_data:[],
       currentPage: 1,
       pagesize: 10,
       loading: true,
+      total:10
     };
   },
   mounted() {
-    axios
-      .get("/rest/OrderManagement")
+    axios({
+      method:'post',
+      url:'/rest/chargeapi/sysOrderController/orderList',
+      headers:{
+        Authorization:getCookie(1001),
+      },
+      data:{
+        pageNum:1,
+        pageSize:10
+      }
+    })
       .then(result => {
         // console.log(result.data)
         this.loading = false;
-        this.dataList = result.data;
+        this.dataList = result.data.data.orderList;
+        this.total = result.data.data.totalNum;
+        this.pagesize = result.data.data.pageSize;
+        this.currentPage = result.data.data.pageNum;
       })
       .catch(err => {
         this.loading = false;
@@ -209,35 +252,94 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-      this.pagesize = val;
+      // console.log(`每页 ${val} 条`);
+      this.loading = true;
+      axios({
+      method:'post',
+      url:'/rest/chargeapi/sysOrderController/orderList',
+      headers:{
+        Authorization:getCookie(1001),
+      },
+      data:{
+        pageNum:1,
+        pageSize:val
+      }
+    })
+      .then(result => {
+        console.log(result.data)
+        this.loading = false;
+        this.dataList = result.data.data.orderList;
+        this.total = result.data.data.totalNum;
+        this.pagesize = result.data.data.pageSize;
+        this.currentPage = result.data.data.pageNum;
+        // this.dataList = result.data;
+      })
+      .catch(err => {
+        this.loading = false;
+        console.error(err);
+      });
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this.currentPage = val;
-    },
-    search_table() {
-      if (this.input == "") {
-        this.$message.warning("查询条件不能为空！");
-        return;
+      // console.log(`当前页: ${val}`);
+      axios({
+      method:'post',
+      url:'/rest/chargeapi/sysOrderController/orderList',
+      headers:{
+        Authorization:getCookie(1001),
+      },
+      data:{
+        pageNum:val,
+        pageSize:10
       }
-      axios
-        .get("/rest/OrderManagement")
-        .then(result => {
-          // console.log(result.data)
-          this.loading = false;
-          this.result_data = result.data;
-          this.dataList = []; //每次手动将数据置空
-          this.result_data.forEach((value, index) => {
-            console.log(value.order_number);
-            if (value.order_number == this.input) {
-              this.dataList.push(value); //添加数据进去显示出来
-            }
-          });
-        })
-        .catch(err => {
-          console.error(err);
-        });
+    })
+      .then(result => {
+        // console.log(result.data)
+        this.loading = false;
+        this.dataList = result.data.data.orderList;
+        this.total = result.data.data.totalNum;
+        this.pagesize = result.data.data.pageSize;
+        this.currentPage = result.data.data.pageNum;
+        // this.dataList = result.data;
+      })
+      .catch(err => {
+        this.loading = false;
+        console.error(err);
+      });
+    },
+    search_table() {//查询
+      // if (this.input == "") {
+      //   this.$message.warning("查询条件不能为空！");
+      //   return;
+      // }
+      axios({
+      method:'post',
+      url:'/rest/chargeapi/sysOrderController/orderList',
+      headers:{
+        Authorization:getCookie(1001),
+      },
+      data:{
+        order_status:this.value03,
+        station_name:this.input0,
+        order_no: this.input,
+        pageNum: 1,
+        pageSize: 10
+      }
+    })
+      .then(result => {
+        // console.log(result.data)
+        this.loading = false;
+        this.dataList = result.data.data.orderList;
+        this.total = result.data.data.totalNum;
+        this.pagesize = result.data.data.pageSize;
+        this.currentPage = result.data.data.pageNum;
+
+        // this.value02 = "1";
+        // this.value03 = "1";
+      })
+      .catch(err => {
+        this.loading = false;
+        console.error(err);
+      });
     }
   }
 };
@@ -249,7 +351,8 @@ export default {
 }
 .header {
   width: 100%;
-  height: 12%;
+  min-width:1116px;
+  height: 112px;
   box-sizing: border-box;
   background: #000;
   padding: 16px;
@@ -264,6 +367,7 @@ export default {
 }
 .header_nav {
   width: 100%;
+  min-height: 80px;
   height: 100%;
   box-sizing: border-box;
   background: #212121;
@@ -278,18 +382,24 @@ export default {
   margin-right: 6%;
 }
 .header_select {
-  width: 30%;
+  width: 22.5%;
   height: 100%;
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  padding-left: 4%;
   float: left;
+  padding-left: 2%;
 }
-
+.header_button{
+  float: right;
+}
+.el-table__header >>> .el-table tr {
+  background: #212121 !important;
+}
 .footer {
   width: 100%;
-  height: 88%;
+  min-width:1116px;
+  height: calc(100% - 112px);
   background: #000;
   box-sizing: border-box;
   padding: 16px;
@@ -300,26 +410,44 @@ export default {
   height: 100%;
   background: #212121;
   border-radius: 6px;
+  overflow-y: auto;
 }
 .footer_informatian {
   width: 100%;
-  height: 100%;
-}
-.el-table__header >>> .el-table tr {
-  background: #212121 !important;
+  height: 85%;
+  overflow-y: auto;
 }
 .footer_page {
   width: 100%;
-  height: 40px;
+  height: 15%;
   display: flex;
   align-items: center;
   text-align: center;
+  justify-content: center;
 }
 .el-pagination {
-  margin-left: 25%;
   font-weight: 400;
 }
-.header_select >>> .el-input {
-  width: 193px !important;
+.el-input {
+  width: 160px;
+}
+/* el-table__body-wrapper is-scrolling-left */
+.el-table >>> .el-table__body-wrapper{
+  width: 100%;
+  height: calc(100% - 48px);
+  overflow-y: auto;
+}
+
+/* 启动停止异常字体颜色 */
+.stated0{
+  color: #FF5959;
+}
+/* 充电中字体颜色 */
+.stated1{
+  color: #3BFFB3;
+}
+/* 已完成字体颜色 */
+.stated2{
+  color: #FF9B59;
 }
 </style>

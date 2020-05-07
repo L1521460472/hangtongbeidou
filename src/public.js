@@ -201,3 +201,48 @@ function myTrim(str){
 	//return str.replace(/\s+$/,"");//去掉right
 	return str.replace(/^\s+|\s+$/g,"");//去掉前后空格
 }
+
+function setCookie(key,value,iDay){//设置cookie
+	var oDate = new Date();
+	oDate.setDate(oDate.getDate() + iDay);//设置过期时间
+	document.cookie = key + '=' + value + ';expires=' + oDate.toString();
+  }
+
+function getCookie(key){//获取指定的key的cookie值
+	var arr = document.cookie.split(';');//获取当前域名的所有cookie，以;分割成数组。
+	for(var i = 0;i<arr.length;i++){
+	  var brr = arr[i].split('=');
+	  if(brr[0].trim() == key){
+		return brr[1];
+	  }
+	}
+	return ''; //没有找到返回值
+  }
+
+function removeCookie(key){//移除cookie
+	setCookie(key,1,-1)
+}
+
+function dateToString(date) {
+	//日期转字符串
+	var year = date.getFullYear();
+	var month = (date.getMonth() + 1).toString();
+	var day = date.getDate().toString();
+	if (month.length == 1) {
+	  month = "0" + month;
+	}
+	if (day.length == 1) {
+	  day = "0" + day;
+	}
+	var dateTime = year + "-" + month + "-" + day;
+	return dateTime;
+  }
+
+
+
+module.exports = {
+	setCookie,
+	getCookie,
+	removeCookie,
+	dateToString,
+}

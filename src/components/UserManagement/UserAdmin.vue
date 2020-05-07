@@ -5,39 +5,33 @@
         <el-col :span="24">
           <div class="header_nav">
             <div class="header_select">
-              <div style="width:100%;height:40%">
                 <span>手机号码</span>
                 <el-input
                   v-model="input1"
-                  placeholder="输入手机号"
+                  placeholder="请输入手机号"
+                  clearable
                 ></el-input>
-              </div>
-              <div style="width:100%;height:40%">
-                <span id="span">开始时间</span>
-                <el-input
-                  v-model="input2"
-                  placeholder="输入订单号/车牌号"
-                ></el-input>
-              </div>
             </div>
             <div class="header_data">
               <span class="demonstration">注册时间</span>
               <el-date-picker
                 v-model="value_start"
                 type="date"
-                placeholder="选择日期"
+                placeholder="请选择开始时间"
+                :picker-options="pickerOptions"
               >
               </el-date-picker>
               <span id="demonstration" class="demonstration">至</span>
               <el-date-picker
                 v-model="value_end"
                 type="date"
-                placeholder="选择日期"
+                placeholder="请选择结束时间"
+                :picker-options="pickerOptions"
               >
               </el-date-picker>
             </div>
             <div class="header_button">
-              <button>查询</button>
+              <button @click="search">查询</button>
             </div>
           </div>
         </el-col>
@@ -48,19 +42,16 @@
       <el-row>
         <el-col :span="24">
           <div class="footer_nav">
-            <el-table
+            <div class="footer_informatian">
+              <el-table
               v-loading="loading"
                 element-loading-text="拼命加载中"
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
               :data="
-                dataList.slice(
-                  (currentPage - 1) * pagesize,
-                  currentPage * pagesize
-                )
+                dataList
               "
-              style="width: 100%;height:570px"
-              max-height="590"
+              style="width: 100%;height:100%;"
             >
               <el-table-column
                 prop="number"
@@ -68,12 +59,12 @@
                 label="序号"
               ></el-table-column>
               <el-table-column
-                prop="userId"
+                prop="realname"
                 min-width="110"
                 label="用户ID"
               ></el-table-column>
               <el-table-column
-                prop="versions"
+                prop="app_version"
                 min-width="100"
                 label="APP版本号"
               ></el-table-column>
@@ -88,29 +79,29 @@
                 label="用户账号"
               ></el-table-column>
               <el-table-column
-                prop="user_balance"
-                min-width="80"
-                label="用户余额"
+                prop="balance"
+                min-width="90"
+                label="用户余额/元"
               ></el-table-column>
               <el-table-column
-                prop="time"
-                min-width="160"
+                prop="register_time"
+                min-width="150"
                 label="注册时间"
               ></el-table-column>
               <el-table-column
-                prop="order_history"
+                prop="total_order"
                 min-width="100"
-                label="历史订单数量"
+                label="历史订单/条"
               ></el-table-column>
               <el-table-column
-                prop="recharge_tatol"
-                min-width="100"
-                label="总充值金额"
+                prop="total_recharge"
+                min-width="90"
+                label="累计充值/元"
               ></el-table-column>
               <el-table-column
-                prop="consumption_tatol"
-                min-width="100"
-                label="总消费金额"
+                prop="total_fee"
+                min-width="90"
+                label="累计消费/元"
               ></el-table-column>
               <el-table-column min-width="250" label="操作">
                 <template slot-scope="scope">
@@ -125,6 +116,7 @@
                 </template>
               </el-table-column>
             </el-table>
+            </div>
 
             <div class="footer_page">
               <el-pagination
@@ -135,7 +127,7 @@
                 :page-size="pagesize"
                 :pager-count="5"
                 layout="total, sizes, prev, pager, next, jumper"
-                :total="dataList.length"
+                :total="total"
               >
               </el-pagination>
             </div>
@@ -146,231 +138,35 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
+import {getCookie,dateToString} from '../../public'
 export default {
-  name: "RechargeRecord",
+  name: "UserAdmin",
   data() {
     return {
-      options01: [
-        {
-          value: "选项1",
-          label: "黄金糕"
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now() - 8.64e6; //如果没有后面的-8.64e6就是不可以选择今天的
         },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
-      value01: "",
+      },
       input1: "",
-      input2: "",
       value_start: "",
       value_end: "",
-      dataList: [
-        {
-          number: "1",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-                {
-          number: "2",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "3",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "4",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "5",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "6",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "7",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "8",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "9",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "10",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "11",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "12",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-
-        {
-          number: "13",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-        {
-          number: "14",
-          userId: "201908125478",
-          versions: "1.0.0",
-          phone: "13100000000",
-          username: "李先生",
-          user_balance: "0",
-          time: "2019-07-08  14:23:56",
-          order_history: "9",
-          recharge_tatol: "99",
-          consumption_tatol: "90",
-        },
-      ],
+      dataList: [],
       currentPage: 1,
       pagesize: 10,
       loading: true,
+      total:10,
     };
   },
   methods: {
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
-      this.pagesize = val;
+      // this.pagesize = val;
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
-      this.currentPage = val;
+      // this.currentPage = val;
     },
     handleEdit(index, row) {
         console.log(index, row);
@@ -381,16 +177,86 @@ export default {
         });
       },
     handleDelete(index, row) {
-      console.log(index, row);
+      // console.log(index, row);
       this.$message({
           message: '功能建设中...',
           center: true,
           type: 'success'
         });
+    },
+    search(){
+      //判断是否输入日期
+      if(this.value_start == '' || this.value_start == null){
+        this.value_start = ''
+      }else{
+        if(this.value_start.length == 10){
+          this.value_start = this.value_start;
+        }else{
+          this.value_start = dateToString(this.value_start);
+        }
+      }
+      if(this.value_end == '' || this.value_end == null){
+        this.value_end = ''
+      }else{
+        if(this.value_end.length == 10){
+          this.value_end = this.value_end;
+        }else{
+          this.value_end = dateToString(this.value_end);
+        }
+      } 
+      //发送请求
+      axios({
+      method:'post',
+      url:'/rest/chargeapi/sysUserController/userList',
+      headers:{
+        Authorization:getCookie(1001)
+      },
+      data:{
+        phone: this.input1,
+        startDate: this.value_start,
+        endDate: this.value_end,
+        pageNum:1,
+        pageSize:10
+      }
+    }).then((result)=>{
+      // console.log(result.data)
+      this.loading = false;
+      this.dataList = result.data.data.userList;
+      this.total = result.data.data.totalNum;
+      this.pagesize = result.data.data.pageSize;
+      this.currentPage = result.data.data.pageNum;
+      // this.input1 = '';
+      // this.value_start = '';
+      // this.value_end = '';
+    }).catch((err)=>{
+      this.loading = false;
+      console.error(err)
+    })
     }
   },
   mounted() {
-    this.loading = false;
+    axios({
+      method:'post',
+      url:'/rest/chargeapi/sysUserController/userList',
+      headers:{
+        Authorization:getCookie(1001)
+      },
+      data:{
+        pageNum:1,
+        pageSize:10
+      }
+    }).then((result)=>{
+      // console.log(result.data)
+      this.loading = false;
+      this.dataList = result.data.data.userList;
+      this.total = result.data.data.totalNum;
+      this.pagesize = result.data.data.pageSize;
+      this.currentPage = result.data.data.pageNum;
+    }).catch((err)=>{
+      this.loading = false;
+      console.error(err)
+    })
+    
   }
 };
 </script>
@@ -401,9 +267,11 @@ export default {
 }
 .header {
   width: 100%;
-  height: 20%;
+  min-width:1116px;
+  height: 112px;
   box-sizing: border-box;
   padding: 16px;
+  background: #000;
 }
 .el-row {
   width: 100%;
@@ -425,10 +293,8 @@ export default {
 .header_select {
   width: 30%;
   height: 100%;
-  padding: 2.5% 0;
   display: flex;
-  flex-wrap: wrap;
-  align-content: space-between;
+  align-items: center;
   box-sizing: border-box;
   padding-left: 4%;
   float: left;
@@ -440,58 +306,59 @@ export default {
   color: rgba(255, 255, 255, 1);
   opacity: 0.8;
   margin-right: 4%;
-  margin-top: 2%;
 }
 .header_data {
   width: 60%;
   height: 100%;
-  padding: 2.5% 0;
   display: flex;
-  flex-wrap: wrap;
-  align-content: space-between;
+  align-items: center;
   box-sizing: border-box;
   padding-left: 4%;
   float: left;
 }
 .el-input {
-  width: 193px;
+  width: 160px;
 }
 .header_button {
-  align-items: flex-end !important;
+  align-items: center !important;
   box-sizing: border-box;
-  padding-bottom: 3%;
 }
-
+.el-table__header >>> .el-table tr {
+  background: #212121 !important;
+}
 /* ------------ footer -------------- */
 .footer {
   width: 100%;
-  height: 80%;
+  min-width:1116px;
+  height: calc(100% - 112px);
   box-sizing: border-box;
   padding: 0 16px 16px 16px;
+  background: #000;
 }
 .footer_nav {
   width: 100%;
   height: 100%;
   background: #212121;
   border-radius: 6px;
+  overflow-y: auto;
 }
 .footer_informatian {
   width: 100%;
-  height: 100%;
-}
-.el-table__header >>> .el-table tr {
-  background: #212121 !important;
+  height: 85%;
+  overflow-y: auto;
 }
 .footer_page {
   width: 100%;
-  height: 40px;
+  height: 15%;
   display: flex;
   align-items: center;
   text-align: center;
+  justify-content: center;
 }
-.el-pagination {
-  margin-left: 25%;
-  font-weight: 400;
+.el-table >>> .el-table__body-wrapper{
+  width: 100%;
+  height: calc(100% - 48px);
+  overflow-y: auto;
 }
 .demonstration {
   font-size: 12px;
@@ -500,10 +367,9 @@ export default {
   color: rgba(255, 255, 255, 1);
   opacity: 0.8;
   margin-right: 2%;
-  margin-top: 0.8%;
 }
 #demonstration {
-  margin-left: 15%;
+  margin-left: 2%;
 }
 .particulars{
   color: #FFAB3E;

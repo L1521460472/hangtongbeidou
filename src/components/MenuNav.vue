@@ -11,6 +11,7 @@
       >
         <el-submenu index="1">
           <template slot="title">
+             <i class="el-icon-s-home"></i>
             <span slot="title">首页</span>
           </template>
           <el-menu-item-group>
@@ -19,6 +20,7 @@
         </el-submenu>
         <el-submenu index="2">
           <template slot="title">
+            <i class="el-icon-s-claim"></i>
             <span slot="title">运营管理</span>
           </template>
           <el-menu-item-group>
@@ -30,20 +32,23 @@
         </el-submenu>
         <el-submenu index="3">
           <template slot="title">
+            <i class="el-icon-menu"></i>
             <span slot="title">供应商</span>
           </template>
         </el-submenu>
         <el-submenu index="4">
           <template slot="title">
+            <i class="el-icon-s-data"></i>
             <span slot="title">报表管理</span>
           </template>
         </el-submenu>
         <el-submenu index="5">
           <template slot="title">
+            <i class="el-icon-s-custom"></i>
             <span slot="title">用户管理</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/UserAdmin">用户管理</el-menu-item>
+            <el-menu-item index="/UserAdmin">用户信息</el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group>
             <el-menu-item index="/ShoppingProduct">产品充值</el-menu-item>
@@ -62,10 +67,10 @@ export default {
     },
     methods: {
     handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     }
   },
 
@@ -113,21 +118,21 @@ export default {
   height: 32px !important;
   line-height: 32px !important;
   background: #212121;
-  color: #fff !important;
-  opacity: 0.4;
+  color: rgba(255,255,255,.4) !important;
+  /* opacity: 0.4; */
 }
 
 .el-menu-item-group{
   height: 32px !important;
   line-height: 32px !important;
   background: #212121 !important;
-  color: #fff !important;
-  opacity: 0.8;
+  color: rgba(255,255,255,.8) !important;
+  /* opacity: 0.8; */
 }
 .el-menu-item.is-active{
   background-color: #212121 !important;
   color: #FBD198 !important;
-  opacity: 0.8;
+  /* opacity: 0.8; */
 }
 .el-menu-item:hover{
   background-color: #212121 !important;

@@ -1,44 +1,80 @@
 <template>
   <div class="top-bar">
     <div class="logo">
-      <img src="../image/航通北斗logo2020版-05.png" style="width:100%;height:100%">
+      <img
+        src="../image/航通北斗logo2020版-05.png"
+        style="width:100%;height:100%"
+      />
       <h1>充电桩后台管理系统</h1>
     </div>
     <div class="setting-btn">
-      <el-popover
-        ref="setting-btn-popover"
-        placement="bottom"
-        trigger="hover">
+      <el-popover ref="setting-btn-popover" placement="bottom" trigger="hover">
         <!-- <el-button type="text" class='setting-popover-item'>修改密码</el-button> -->
-        <el-button type="text" class='setting-popover-item' @click="logout">退出</el-button>
+        <el-button type="text" class="setting-popover-item" @click="logout"
+          >退出</el-button
+        >
       </el-popover>
-      <el-button type="text" v-popover:setting-btn-popover>个人中心 <i class="el-icon-arrow-down"/></el-button>
+      <el-button type="text" v-popover:setting-btn-popover
+        > {{ mes }} <i class="el-icon-arrow-down"
+      /></el-button>
     </div>
   </div>
 </template>
 
 <script>
 import Router from "../router";
-
+import axios from "axios";
+import {getCookie,removeCookie} from '../public'
 export default {
+  data(){
+    return{
+      mes:''
+    }
+  },
   methods: {
     logout() {
-      Router.push({
-        name: "UserLogin"
+      axios({
+        method: "post",
+        url: "/rest/userapi/appLoginController/adminLogout",
+        headers: {
+          Authorization: document.cookie
+        }
+      }).then(result => {
+        if (result.data.code === 0 && result.status === 200) {
+          if(getCookie('HTuserName') && getCookie('HTpassWord')){
+            removeCookie('HTuserName');
+            removeCookie('HTpassWord');
+          }
+          Router.push({
+            name: "UserLogin"
+          });
+        }else{
+          if(getCookie('HTuserName') && getCookie('HTpassWord')){
+            removeCookie('HTuserName');
+            removeCookie('HTpassWord');
+          }
+          Router.push({
+            name: "UserLogin"
+          });
+        }
       });
     }
-  }
+  },
+  mounted() {
+    this.mes = getCookie("HTuserName");
+  },
 };
 </script>
 
 <style scoped>
 .top-bar {
   width: 100%;
+  min-width:1316px;
   height: 100%;
   height: 48px;
   background: #212121;
 }
-.top-bar .el-button{
+.top-bar .el-button {
   color: #e5e5e5 !important;
   border: 1px solid #212121 !important;
 }
@@ -49,11 +85,11 @@ export default {
   height: 100%;
   float: left;
   font-size: 16px;
-  color: #FBD198;
+  color: #fbd198;
   display: flex;
   align-items: center;
 }
-.logo img{
+.logo img {
   display: inline-block;
   width: 42px !important;
   height: 42px !important;
@@ -65,13 +101,13 @@ export default {
   display: flex;
   align-items: center;
 }
-.el-button{
+.el-button {
   margin-right: 35px;
 }
-.el-button:hover{
-  color: #FBD198 !important;
+.el-button:hover {
+  color: #fbd198 !important;
 }
-.el-popover{
+.el-popover {
   min-width: 100px;
   background: #212121 !important;
 }
@@ -79,12 +115,12 @@ export default {
   display: block;
   border: 1px solid #212121 !important;
 }
-.el-popover .el-button--text{
+.el-popover .el-button--text {
   color: #e5e5e5 !important;
   opacity: 0.8;
   border: 1px solid #212121 !important;
 }
-.el-popover .el-button--text:hover{
-  color: #FBD198 !important;
+.el-popover .el-button--text:hover {
+  color: #fbd198 !important;
 }
 </style>

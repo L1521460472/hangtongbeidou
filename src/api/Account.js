@@ -4,9 +4,9 @@ import http from './http';
 export default {
     login(dto) {
         return http
-            .post('/login', {
-                uid: dto.uid,
-                pwd: dto.pwd
+            .post('/rest/login', {
+                username: dto.uid,
+                password: dto.pwd
             }, {
                 adapter: async (config) => {
                     return {
