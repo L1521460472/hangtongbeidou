@@ -54,6 +54,7 @@
             <!-- </div> -->
             <div class="header_button">
               <button @click="search_table">查询</button>
+              <button @click="reset">重置</button>
             </div>
           </div>
         </el-col>
@@ -82,7 +83,7 @@
                 ></el-table-column>
                 <el-table-column
                   prop="service_no"
-                  min-width="125"
+                  min-width="165"
                   label="服务单号"
                 ></el-table-column>
                 <el-table-column
@@ -151,7 +152,7 @@
               <div class="footer_page">
                 <el-pagination
                   @size-change="handleSizeChange"
-                  @current-change="handleCurrentChange"
+                  @current-change="handleCurrentChange($event,input0,value_start,value_end)"
                   :current-page="currentPage"
                   :page-sizes="[10, 20, 30, 40, 50]"
                   :page-size="pagesize"
@@ -179,13 +180,6 @@ export default {
           return time.getTime() > Date.now() - 8.64e6; //如果没有后面的-8.64e6就是不可以选择今天的
         },
       },
-      options01: [
-        {
-          value: "1",
-          label: "深圳市"
-        },
-      ],
-      value01: "1",
       input0:"",
       input: "",
       value_start: "",
@@ -201,11 +195,62 @@ export default {
   methods: {
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
-      this.pagesize = val;
+      axios({
+      method:'post',
+      url:'/rest/chargeapi/sysOrderController/chargeList',
+      headers:{
+        Authorization:getCookie(1001),
+      },
+      data:{
+        pageNum:1,
+        pageSize:val
+      }
+    })
+    .then((result)=>{
+      // console.log(result.data)
+      this.loading = false;
+      this.dataList = result.data.data.chargeList;
+      this.total = result.data.data.totalNum;
+      this.pagesize = result.data.data.pageSize;
+      this.currentPage = result.data.data.pageNum;
+    })
+    .catch((err)=>{
+      this.loading = false;
+      console.error(err);
+    })
     },
-    handleCurrentChange(val) {
+    handleCurrentChange(val,s,q,m) {
       // console.log(`当前页: ${val}`);
-      this.currentPage = val;
+      axios({
+      method:'post',
+      url:'/rest/chargeapi/sysOrderController/chargeList',
+      headers:{
+        Authorization:getCookie(1001),
+      },
+      data:{
+        station_name: s,
+        startDate: q,
+        endDate: m,
+        pageNum:val,
+        pageSize:10
+      }
+    })
+    .then((result)=>{
+      // console.log(result.data)
+      this.loading = false;
+      this.dataList = result.data.data.chargeList;
+      this.total = result.data.data.totalNum;
+      this.pagesize = result.data.data.pageSize;
+      this.currentPage = result.data.data.pageNum;
+
+      this.dataList.sort(function(a,b){
+        return b.start_time - a.start_time;
+      })
+    })
+    .catch((err)=>{
+      this.loading = false;
+      console.error(err);
+    })
     },
     search_table(){
       //判断是否输入日期
@@ -252,6 +297,9 @@ export default {
         this.pagesize = result.data.data.pageSize;
         this.currentPage = result.data.data.pageNum;
 
+      //   this.dataList.sort(function(a,b){
+      //   return b.start_time - a.start_time;
+      // })
         // this.input1 = '';
         // this.value_start = '';
         // this.value_end = '';
@@ -261,9 +309,8 @@ export default {
         console.error(err);
       })
     },
-  },
-  mounted() {
-    axios({
+    getInit(){
+      axios({
       method:'post',
       url:'/rest/chargeapi/sysOrderController/chargeList',
       headers:{
@@ -281,11 +328,23 @@ export default {
       this.total = result.data.data.totalNum;
       this.pagesize = result.data.data.pageSize;
       this.currentPage = result.data.data.pageNum;
+
+      this.input = '';
+      this.input0 = '';
+      this.value_start = '';
+      this.value_end = '';
     })
     .catch((err)=>{
       this.loading = false;
       console.error(err);
     })
+    },
+    reset(){
+      this.getInit();
+    }
+  },
+  mounted() {
+    this.getInit();
   }
 };
 </script>
@@ -394,6 +453,7 @@ export default {
   width: 160px;
 }
 .header_button {
+  flex-wrap: wrap;
   box-sizing: border-box;
   float: right;
   /* margin-top: 25px; */

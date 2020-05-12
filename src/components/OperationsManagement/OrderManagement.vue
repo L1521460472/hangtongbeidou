@@ -46,6 +46,7 @@
             </div>
             <div class="header_button">
               <button @click="search_table">查询</button>
+              <button @click="reset">重置</button>
             </div>
           </div>
         </el-col>
@@ -62,10 +63,8 @@
                 element-loading-text="拼命加载中"
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
-                :data="
-                  dataList
-                "
-                style="width: 100%;height:100%"
+                :data="dataList"
+                style="width: 100%; height: 100%;"
               >
                 <el-table-column
                   prop="order_no"
@@ -74,7 +73,7 @@
                 ></el-table-column>
                 <el-table-column
                   prop="service_no"
-                  min-width="125"
+                  min-width="165"
                   label="服务单号"
                 ></el-table-column>
                 <el-table-column
@@ -113,66 +112,45 @@
                   min-width="80"
                   label="订单状态"
                 >
-                <template slot-scope="scope">
-                  <span
-                    v-if="scope.row.order_status == 0"
-                    class="stated"
-                    >预订单</span
-                  >
-                  <span
-                    v-if="scope.row.order_status == 1"
-                    class="stated0"
-                    >启动异常</span
-                  >
-                  <span
-                    v-if="scope.row.order_status == 2"
-                    class="stated1"
-                    >充电中</span
-                  >
-                  <span
-                    v-if="scope.row.order_status == 3"
-                    class="stated2"
-                    >已完成</span
-                  >
-                  <span
-                    v-if="scope.row.order_status == 4"
-                    class="stated"
-                    >停止异常</span
-                  >
-                </template>
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.order_status == 0" class="stated"
+                      >预订单</span
+                    >
+                    <span v-if="scope.row.order_status == 1" class="stated0"
+                      >启动异常</span
+                    >
+                    <span v-if="scope.row.order_status == 2" class="stated1"
+                      >充电中</span
+                    >
+                    <span v-if="scope.row.order_status == 3" class="stated2"
+                      >已完成</span
+                    >
+                    <span v-if="scope.row.order_status == 4" class="stated"
+                      >停止异常</span
+                    >
+                  </template>
                 </el-table-column>
-                <el-table-column
-                  prop="order_status"
-                  class="order_status"
-                  min-width="80"
-                  label="支付状态"
-                >
-                <template slot-scope="scope">
-                  <span
-                    v-if="scope.row.status == 1"
-                    >未支付</span
-                  >
-                  <span
-                    v-if="scope.row.status == 2"
-                    >-</span
-                  >
-                </template>
+                <el-table-column min-width="80" label="支付状态">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.status == 1">未支付</span>
+                    <span v-if="scope.row.status == 2">-</span>
+                  </template>
                 </el-table-column>
               </el-table>
             </div>
             <div class="footer_page">
-                <el-pagination
-                  @size-change="handleSizeChange"
-                  @current-change="handleCurrentChange"
-                  :current-page="currentPage"
-                  :page-sizes="[10, 20, 30, 40, 50]"
-                  :page-size="pagesize"
-                  :pager-count="5"
-                  layout="total, sizes, prev, pager, next, jumper"
-                  :total="total"
-                >
-                </el-pagination>
-              </div>
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange($event,value03,input0)"
+                :current-page.sync="currentPage"
+                :page-sizes="[10, 20, 30, 40, 50]"
+                :page-size.sync="pagesize"
+                :pager-count="5"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total"
+              >
+              </el-pagination>
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -181,151 +159,146 @@
 </template>
 <script>
 import axios from "axios";
-import {getCookie} from '../../public'
+import { getCookie } from "../../public";
 export default {
   name: "OrderManagement",
   data() {
     return {
-      options01: [
+      options03: [
         {
           value: "",
-          label: "深圳市"
-        },
-      ],
-      value01: "",
-      options03:[
-        {
-          value: "",
-          label: "全部"
+          label: "全部",
         },
         {
           value: "1",
-          label: "启动异常"
+          label: "启动异常",
         },
         {
           value: "2",
-          label: "充电中"
+          label: "充电中",
         },
         {
           value: "3",
-          label: "已完成"
+          label: "已完成",
         },
         {
           value: "4",
-          label: "停止异常"
-        }
+          label: "停止异常",
+        },
       ],
       value03: "",
-      input0:"",
+      input0: "",
       input: "",
       dataList: [],
       currentPage: 1,
       pagesize: 10,
       loading: true,
-      total:10
+      total: 10,
     };
   },
   mounted() {
-    axios({
-      method:'post',
-      url:'/rest/chargeapi/sysOrderController/orderList',
-      headers:{
-        Authorization:getCookie(1001),
-      },
-      data:{
-        pageNum:1,
-        pageSize:10
-      }
-    })
-      .then(result => {
-        // console.log(result.data)
-        this.loading = false;
-        this.dataList = result.data.data.orderList;
-        this.total = result.data.data.totalNum;
-        this.pagesize = result.data.data.pageSize;
-        this.currentPage = result.data.data.pageNum;
-      })
-      .catch(err => {
-        this.loading = false;
-        console.error(err);
-      });
+    this.getInit();
   },
   methods: {
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
       this.loading = true;
       axios({
-      method:'post',
-      url:'/rest/chargeapi/sysOrderController/orderList',
-      headers:{
-        Authorization:getCookie(1001),
-      },
-      data:{
-        pageNum:1,
-        pageSize:val
-      }
-    })
-      .then(result => {
-        console.log(result.data)
-        this.loading = false;
-        this.dataList = result.data.data.orderList;
-        this.total = result.data.data.totalNum;
-        this.pagesize = result.data.data.pageSize;
-        this.currentPage = result.data.data.pageNum;
-        // this.dataList = result.data;
+        method: "post",
+        url: "/rest/chargeapi/sysOrderController/orderList",
+        headers: {
+          Authorization: getCookie(1001),
+        },
+        data: {
+          pageNum: 1,
+          pageSize: val,
+        },
       })
-      .catch(err => {
-        this.loading = false;
-        console.error(err);
-      });
+        .then((result) => {
+          // console.log(result.data)
+          this.loading = false;
+          this.dataList = result.data.data.orderList;
+          this.total = result.data.data.totalNum;
+          this.pagesize = result.data.data.pageSize;
+          this.currentPage = result.data.data.pageNum;
+        })
+        .catch((err) => {
+          this.loading = false;
+          console.error(err);
+        });
     },
-    handleCurrentChange(val) {
+    handleCurrentChange(val,s,q) {
       // console.log(`当前页: ${val}`);
       axios({
-      method:'post',
-      url:'/rest/chargeapi/sysOrderController/orderList',
-      headers:{
-        Authorization:getCookie(1001),
-      },
-      data:{
-        pageNum:val,
-        pageSize:10
-      }
-    })
-      .then(result => {
-        // console.log(result.data)
-        this.loading = false;
-        this.dataList = result.data.data.orderList;
-        this.total = result.data.data.totalNum;
-        this.pagesize = result.data.data.pageSize;
-        this.currentPage = result.data.data.pageNum;
-        // this.dataList = result.data;
+        method: "post",
+        url: "/rest/chargeapi/sysOrderController/orderList",
+        headers: {
+          Authorization: getCookie(1001),
+        },
+        data: {
+          order_status: s,
+          station_name: q,
+          pageNum: val,
+          pageSize: 10,
+        },
       })
-      .catch(err => {
-        this.loading = false;
-        console.error(err);
-      });
+        .then((result) => {
+          // console.log(result.data)
+          this.loading = false;
+          this.dataList = result.data.data.orderList;
+          this.total = result.data.data.totalNum;
+          this.pagesize = result.data.data.pageSize;
+          this.currentPage = result.data.data.pageNum;
+          // this.dataList = result.data;
+        })
+        .catch((err) => {
+          this.loading = false;
+          console.error(err);
+        });
     },
-    search_table() {//查询
-      // if (this.input == "") {
-      //   this.$message.warning("查询条件不能为空！");
-      //   return;
-      // }
+    search_table() {
+      //查询
       axios({
-      method:'post',
-      url:'/rest/chargeapi/sysOrderController/orderList',
-      headers:{
-        Authorization:getCookie(1001),
+        method: "post",
+        url: "/rest/chargeapi/sysOrderController/orderList",
+        headers: {
+          Authorization: getCookie(1001),
+        },
+        data: {
+          order_status: this.value03,
+          station_name: this.input0,
+          order_no: this.input,
+          pageNum: 1,
+          pageSize: 10,
+        },
+      })
+        .then((result) => {
+          // console.log(result.data)
+          this.loading = false;
+          this.dataList = result.data.data.orderList;
+          this.total = result.data.data.totalNum;
+          this.pagesize = result.data.data.pageSize;
+          this.currentPage = result.data.data.pageNum;
+
+        })
+        .catch((err) => {
+          this.loading = false;
+          console.error(err);
+        });
+    },
+    getInit(){
+      axios({
+      method: "post",
+      url: "/rest/chargeapi/sysOrderController/orderList",
+      headers: {
+        Authorization: getCookie(1001),
       },
-      data:{
-        order_status:this.value03,
-        station_name:this.input0,
-        order_no: this.input,
+      data: {
         pageNum: 1,
-        pageSize: 10
-      }
+        pageSize: 10,
+      },
     })
-      .then(result => {
+      .then((result) => {
         // console.log(result.data)
         this.loading = false;
         this.dataList = result.data.data.orderList;
@@ -333,15 +306,27 @@ export default {
         this.pagesize = result.data.data.pageSize;
         this.currentPage = result.data.data.pageNum;
 
-        // this.value02 = "1";
-        // this.value03 = "1";
+        this.value03 = '';
+        this.input = '';
+        this.input0 = '';
       })
-      .catch(err => {
+      .catch((err) => {
         this.loading = false;
         console.error(err);
       });
+    },
+    reset(){
+      this.getInit();
     }
-  }
+  },
+  watch: {
+    // pagesize:function(){
+    //   var _this = this;
+    //   _this.$nextTick(function(){
+    //     _this.handleSizeChange();
+    //   })
+    // }
+  },
 };
 </script>
 <style scoped>
@@ -351,7 +336,7 @@ export default {
 }
 .header {
   width: 100%;
-  min-width:1116px;
+  min-width: 1116px;
   height: 112px;
   box-sizing: border-box;
   background: #000;
@@ -390,7 +375,9 @@ export default {
   float: left;
   padding-left: 2%;
 }
-.header_button{
+.header_button {
+  flex-wrap: wrap;
+  box-sizing: border-box;
   float: right;
 }
 .el-table__header >>> .el-table tr {
@@ -398,7 +385,7 @@ export default {
 }
 .footer {
   width: 100%;
-  min-width:1116px;
+  min-width: 1116px;
   height: calc(100% - 112px);
   background: #000;
   box-sizing: border-box;
@@ -432,22 +419,22 @@ export default {
   width: 160px;
 }
 /* el-table__body-wrapper is-scrolling-left */
-.el-table >>> .el-table__body-wrapper{
+.el-table >>> .el-table__body-wrapper {
   width: 100%;
   height: calc(100% - 48px);
   overflow-y: auto;
 }
 
 /* 启动停止异常字体颜色 */
-.stated0{
-  color: #FF5959;
+.stated0 {
+  color: #ff5959;
 }
 /* 充电中字体颜色 */
-.stated1{
-  color: #3BFFB3;
+.stated1 {
+  color: #3bffb3;
 }
 /* 已完成字体颜色 */
-.stated2{
-  color: #FF9B59;
+.stated2 {
+  color: #ff9b59;
 }
 </style>

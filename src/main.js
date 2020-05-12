@@ -10,9 +10,10 @@ import 'echarts/extension/bmap/bmap';
 
 Vue.prototype.$EventBus = new Vue();
 
+
+Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(Echarts);
-Vue.config.productionTip = false
 
 new Vue({
   router,

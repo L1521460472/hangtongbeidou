@@ -32,6 +32,7 @@
             </div>
             <div class="header_button">
               <button @click="search">查询</button>
+              <button @click="reset">重置</button>
             </div>
           </div>
         </el-col>
@@ -121,7 +122,7 @@
             <div class="footer_page">
               <el-pagination
                 @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
+                @current-change="handleCurrentChange($event,value_start,value_end)"
                 :current-page="currentPage"
                 :page-sizes="[10, 20, 30, 40, 50]"
                 :page-size="pagesize"
@@ -162,14 +163,56 @@ export default {
   methods: {
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
-      // this.pagesize = val;
+      axios({
+      method:'post',
+      url:'/rest/chargeapi/sysUserController/userList',
+      headers:{
+        Authorization:getCookie(1001)
+      },
+      data:{
+        pageNum:1,
+        pageSize:val
+      }
+    }).then((result)=>{
+      // console.log(result.data)
+      this.loading = false;
+      this.dataList = result.data.data.userList;
+      this.total = result.data.data.totalNum;
+      this.pagesize = result.data.data.pageSize;
+      this.currentPage = result.data.data.pageNum;
+    }).catch((err)=>{
+      this.loading = false;
+      console.error(err)
+    })
     },
-    handleCurrentChange(val) {
+    handleCurrentChange(val,start,end) {
       // console.log(`当前页: ${val}`);
-      // this.currentPage = val;
+      axios({
+      method:'post',
+      url:'/rest/chargeapi/sysUserController/userList',
+      headers:{
+        Authorization:getCookie(1001)
+      },
+      data:{
+        startDate: start,
+        endDate: end,
+        pageNum:val,
+        pageSize:10
+      }
+    }).then((result)=>{
+      // console.log(result.data)
+      this.loading = false;
+      this.dataList = result.data.data.userList;
+      this.total = result.data.data.totalNum;
+      this.pagesize = result.data.data.pageSize;
+      this.currentPage = result.data.data.pageNum;
+    }).catch((err)=>{
+      this.loading = false;
+      console.error(err)
+    })
     },
     handleEdit(index, row) {
-        console.log(index, row);
+        // console.log(index, row);
         this.$message({
           message: '功能建设中...',
           center: true,
@@ -232,10 +275,9 @@ export default {
       this.loading = false;
       console.error(err)
     })
-    }
-  },
-  mounted() {
-    axios({
+    },
+    getInit(){
+      axios({
       method:'post',
       url:'/rest/chargeapi/sysUserController/userList',
       headers:{
@@ -252,11 +294,20 @@ export default {
       this.total = result.data.data.totalNum;
       this.pagesize = result.data.data.pageSize;
       this.currentPage = result.data.data.pageNum;
+      this.input1 = '';
+      this.value_start = '';
+      this.value_end = '';
     }).catch((err)=>{
       this.loading = false;
       console.error(err)
     })
-    
+    },
+    reset(){
+      this.getInit();
+    }
+  },
+  mounted() {
+    this.getInit();
   }
 };
 </script>
@@ -320,7 +371,9 @@ export default {
   width: 160px;
 }
 .header_button {
-  align-items: center !important;
+  /* align-items: flex-start !important; */
+  /* justify-content: space-around !important; */
+  flex-wrap: wrap;
   box-sizing: border-box;
 }
 .el-table__header >>> .el-table tr {

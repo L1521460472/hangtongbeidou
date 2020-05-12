@@ -294,7 +294,7 @@ export default {
                 discount:this.discount,
               }
             }).then((result)=>{
-              console.log(result.data)
+              // console.log(result.data)
             row.money = result.data.data.money;
             row.discount = result.data.data.discount;
             row.amount = result.data.data.amount;

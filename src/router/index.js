@@ -59,7 +59,7 @@ const routes = [
 
 
 const router = new Router({
-  mode: 'history',
+  // mode: 'history', // 有这句的删掉，没有就不用管
   base: process.env.BASE_URL,
   routes
 })

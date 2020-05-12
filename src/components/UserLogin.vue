@@ -45,8 +45,8 @@ export default {
   data() {
     return {
       loginDTO: {
-        userName: "admin",
-        userPassword: "888888"
+        userName: "",
+        userPassword: ""
       },
       loginRules: {
         userName: [{ required: true, message: "请输入账户名称" }],
@@ -59,10 +59,11 @@ export default {
   methods: {
     login() {
       if(this.checked == true){
-        console.log(this.loginDTO.userName)
-        console.log(this.loginDTO.userPassword)
         this.setCookie('HTuserName',this.loginDTO.userName,30);
         this.setCookie('HTpassWord',this.loginDTO.userPassword,30);
+      }else{
+        this.removeCookie('HTuserName');
+        this.removeCookie('HTpassWord');
       }
       this.$refs["loginForm"].validate(valid => {
         if (!valid) {
@@ -71,7 +72,7 @@ export default {
         }
         Axios.post("/rest/userapi/appLoginController/adminLogin", this.loginDTO)
           .then(result => {
-            console.log(result);
+            // console.log(result);
             // this.$store.commit('getCookie',result.data.data.token);//设置cookie
             this.setCookie(1001,result.data.data.token,1);
             this.setCookie('HTuserName',this.loginDTO.userName,1);
@@ -119,20 +120,20 @@ export default {
         }
       }
       return ''; //没有找到返回值
-    }
-    // removeCookie(key){//移除cookie
-    //   this.setCookie(1001,value,-1)
-    // },
-
+    },
+    removeCookie(key){//移除cookie
+      this.setCookie(key,1,-1)
+    },
   },
   mounted() {
     if(this.getCookie('HTuserName') && this.getCookie('HTpassWord')){
-      this.login();
+      this.checked = true;
+      this.loginDTO.userName = this.getCookie('HTuserName');
+      this.loginDTO.userPassword = this.getCookie('HTpassWord');
+      if(this.getCookie(1001)){
+        this.login();
+      }
     }
-    // this.removeCookie();
-    // console.log(new Date().setDate(new Date().getDate() + 2))
-    // document.cookie="username=John Doe; expires=Thu, 18 Dec 2043 12:00:00 GMT";
-    // document.cookie = "username=John Doe; expires=Thu, 01 Jan 1970 00:00:00 GMT";
   },
 };
 </script>

@@ -46,7 +46,7 @@
         </el-col>
       </el-row>
     </div>
-    <div class="box">
+    <div class="box"> 
       <!-- ---------- 中间部分 ------------- -->
       <div class="mian">
         <el-row :gutter="16" type="flex">
@@ -64,7 +64,7 @@
                 <dl>
                   <dt>环比</dt>
                   <dd class="mian_list_dd">
-                    {{ this.todayRevenueRatio }}%
+                    {{ this.todayOrderRatio }}%
                     <i class="el-icon-top"></i>
                     <i class="el-icon-bottom"></i>
                   </dd>
@@ -79,7 +79,7 @@
                 <dl>
                   <dt>环比</dt>
                   <dd class="mian_list_dd">
-                    {{ this.weekRevenueRatio }}%
+                    {{ this.weekOrderRatio }}%
                     <i class="el-icon-top"></i>
                     <i class="el-icon-bottom"></i>
                   </dd>
@@ -94,7 +94,7 @@
                 <dl>
                   <dt>环比</dt>
                   <dd class="mian_list_dd">
-                    {{ this.monthRevenueRatio }}%
+                    {{ this.monthOrderRatio }}%
                     <i class="el-icon-top"></i>
                     <i class="el-icon-bottom"></i>
                   </dd>
@@ -331,6 +331,7 @@ export default {
         },
       })
         .then((result) => {
+          // console.log(result.data)
           this.loading = false;
           this.xAxis_data = [];
           this.series_data = [];
@@ -354,7 +355,7 @@ export default {
           Authorization: getCookie(1001),
         },
       })
-        .then((result) => {
+        .then((result) => { //成功返回数据就赋值
           // console.log(result.data.data);
           var sysOrder = result.data.data.sysOrder;
           var sysStation = result.data.data.sysStation;
@@ -509,6 +510,7 @@ export default {
           this.crrData[i].style.display = "inline-block";
         } else {
           this.arrData[i].style.color = "#FF4B42";
+          this.brrData[i].style.display = "inline-block";
           this.crrData[i].style.display = "none";
         }
       }
@@ -521,8 +523,8 @@ export default {
     var _this = this;
     this.timer = setInterval(() => {
       _this.getBrowseData();
-    }, 60000);
-    this.changeColor();
+      _this.changeColor();
+    }, 6000000);
   },
   computed: {},
   watch: {

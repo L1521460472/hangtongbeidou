@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath:'./',
   devServer: {
     proxy: {
       // '/rest': {
@@ -7,11 +8,11 @@ module.exports = {
       //   changeOrigin: true
       // },
       '/rest': {
-        target: 'http://218.17.210.115:30117/',
+        target: 'http://218.17.210.115:30117/', //测试服务器
         ws: true,
         changeOrigin: true
       },
     }
   },
-  lintOnSave: false
+  lintOnSave: false,
 }

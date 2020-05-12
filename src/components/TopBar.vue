@@ -41,18 +41,20 @@ export default {
         }
       }).then(result => {
         if (result.data.code === 0 && result.status === 200) {
-          if(getCookie('HTuserName') && getCookie('HTpassWord')){
-            removeCookie('HTuserName');
-            removeCookie('HTpassWord');
-          }
+          // if(getCookie('HTuserName') && getCookie('HTpassWord')){
+          //   removeCookie('HTuserName');
+          //   removeCookie('HTpassWord');
+          // }
+          removeCookie(1001);
           Router.push({
             name: "UserLogin"
           });
         }else{
-          if(getCookie('HTuserName') && getCookie('HTpassWord')){
-            removeCookie('HTuserName');
-            removeCookie('HTpassWord');
-          }
+          // if(getCookie('HTuserName') && getCookie('HTpassWord')){
+          //   removeCookie('HTuserName');
+          //   removeCookie('HTpassWord');
+          // }
+          removeCookie(1001);
           Router.push({
             name: "UserLogin"
           });

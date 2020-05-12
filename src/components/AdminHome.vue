@@ -8,11 +8,11 @@
                 <el-aside style="width:200px;min-height:705px;">
                     <menu-nav></menu-nav>
                 </el-aside>
-                <el-mian style="width:calc(100% - 200px);background: #000;min-height:705px;">
+                <el-main style="width:calc(100% - 200px);background: #000;min-height:705px;">
                     <keep-alive>
                       <router-view />
                     </keep-alive>                   
-                </el-mian>
+                </el-main>
             </el-container>
         </el-container>
     </div>
@@ -60,6 +60,7 @@ export default {
 }
 .el-main {
   height: 100%;
+  padding: 0 !important;
 }
 .content-body {
   height: 100%;
