@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../components/Home'
 import AdminHome from '../components/AdminHome'
+import {getCookie} from '../public'
 
 Vue.use(Router);
 const VueRouterPush = Router.prototype.push 
@@ -31,7 +31,15 @@ const routes = [
       {
         path:'/HomeIndex',
         name:'HomeIndex',
-        component:()=>import('../components/HomeIndex.vue')
+        component:()=>import('../components/HomeIndex.vue'),
+        beforeEnter:(to,from,next)=>{
+          if(getCookie(1001)){
+            next()
+          }else{
+            alert('您还没有登录，请先登录');
+            next('/')
+          }
+        }
       }, 
       {
         path:'/OrderManagement',
@@ -53,15 +61,22 @@ const routes = [
         name:'ShoppingProduct',
         component:()=>import('../components/UserManagement/ShoppingProduct')
       },
+      // {
+      //   path:'/bdcx',
+      //   name:'bdcx',
+      //   component:()=>import('../components/bdcx')
+      // },
     ]
   },
 ]
 
 
+
 const router = new Router({
-  // mode: 'history', // 有这句的删掉，没有就不用管
+  // mode: 'history', // 打包的时候有这句的删掉，没有就不用管
   base: process.env.BASE_URL,
   routes
 })
+
 
 export default router

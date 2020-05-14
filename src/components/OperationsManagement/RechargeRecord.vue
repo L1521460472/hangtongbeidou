@@ -151,7 +151,7 @@
 
               <div class="footer_page">
                 <el-pagination
-                  @size-change="handleSizeChange"
+                  @size-change="handleSizeChange($event,input0,value_start,value_end)"
                   @current-change="handleCurrentChange($event,input0,value_start,value_end)"
                   :current-page="currentPage"
                   :page-sizes="[10, 20, 30, 40, 50]"
@@ -193,7 +193,7 @@ export default {
     };
   },
   methods: {
-    handleSizeChange(val) {
+    handleSizeChange(val,s,q,m) {
       // console.log(`每页 ${val} 条`);
       axios({
       method:'post',
@@ -202,6 +202,9 @@ export default {
         Authorization:getCookie(1001),
       },
       data:{
+        station_name: s,
+        startDate: q,
+        endDate: m,
         pageNum:1,
         pageSize:val
       }
@@ -243,9 +246,7 @@ export default {
       this.pagesize = result.data.data.pageSize;
       this.currentPage = result.data.data.pageNum;
 
-      this.dataList.sort(function(a,b){
-        return b.start_time - a.start_time;
-      })
+      
     })
     .catch((err)=>{
       this.loading = false;
@@ -296,13 +297,6 @@ export default {
         this.total = result.data.data.totalNum;
         this.pagesize = result.data.data.pageSize;
         this.currentPage = result.data.data.pageNum;
-
-      //   this.dataList.sort(function(a,b){
-      //   return b.start_time - a.start_time;
-      // })
-        // this.input1 = '';
-        // this.value_start = '';
-        // this.value_end = '';
       })
       .catch((err)=>{
         this.loading = false;
@@ -322,9 +316,9 @@ export default {
       }
     })
     .then((result)=>{
-      // console.log(result.data)
+      // console.log(typeof result.data.data.chargeList[0].start_time)
       this.loading = false;
-      this.dataList = result.data.data.chargeList;
+      this.dataList = result.data.data.chargeList
       this.total = result.data.data.totalNum;
       this.pagesize = result.data.data.pageSize;
       this.currentPage = result.data.data.pageNum;
@@ -453,7 +447,8 @@ export default {
   width: 160px;
 }
 .header_button {
-  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-around;
   box-sizing: border-box;
   float: right;
   /* margin-top: 25px; */

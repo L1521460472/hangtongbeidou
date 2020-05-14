@@ -121,7 +121,7 @@
 
             <div class="footer_page">
               <el-pagination
-                @size-change="handleSizeChange"
+                @size-change="handleSizeChange($event,value_start,value_end)"
                 @current-change="handleCurrentChange($event,value_start,value_end)"
                 :current-page="currentPage"
                 :page-sizes="[10, 20, 30, 40, 50]"
@@ -161,7 +161,7 @@ export default {
     };
   },
   methods: {
-    handleSizeChange(val) {
+    handleSizeChange(val,start,end) {
       // console.log(`每页 ${val} 条`);
       axios({
       method:'post',
@@ -170,6 +170,8 @@ export default {
         Authorization:getCookie(1001)
       },
       data:{
+        startDate: start,
+        endDate: end,
         pageNum:1,
         pageSize:val
       }
@@ -268,9 +270,6 @@ export default {
       this.total = result.data.data.totalNum;
       this.pagesize = result.data.data.pageSize;
       this.currentPage = result.data.data.pageNum;
-      // this.input1 = '';
-      // this.value_start = '';
-      // this.value_end = '';
     }).catch((err)=>{
       this.loading = false;
       console.error(err)
@@ -371,9 +370,8 @@ export default {
   width: 160px;
 }
 .header_button {
-  /* align-items: flex-start !important; */
-  /* justify-content: space-around !important; */
-  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-around;
   box-sizing: border-box;
 }
 .el-table__header >>> .el-table tr {

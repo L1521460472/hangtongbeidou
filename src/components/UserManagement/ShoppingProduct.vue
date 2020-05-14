@@ -48,7 +48,8 @@
                 </template> -->
               </el-table-column>
               <el-table-column
-                label="优惠折扣">
+                label="优惠折扣"
+              >
                 <template slot-scope="scope">
                   <span
                     v-if="scope.row.discount == 1"
@@ -163,6 +164,8 @@ export default {
       },
       formLabelWidth: "120px",
       loading: true,
+      nav1:true,
+      nav2:false,
     };
   },
   methods: {

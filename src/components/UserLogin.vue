@@ -73,8 +73,7 @@ export default {
         Axios.post("/rest/userapi/appLoginController/adminLogin", this.loginDTO)
           .then(result => {
             // console.log(result);
-            // this.$store.commit('getCookie',result.data.data.token);//设置cookie
-            this.setCookie(1001,result.data.data.token,1);
+            this.setCookie(1001,result.data.data.token,0.5);
             this.setCookie('HTuserName',this.loginDTO.userName,1);
             if (result.data.code === 0 && result.status === 200) {
               Router.push({
@@ -124,6 +123,11 @@ export default {
     removeCookie(key){//移除cookie
       this.setCookie(key,1,-1)
     },
+    keyDown(e){
+      if(e.keyCode == 13){//enter回车键 == 13
+        this.login();
+      }
+    }
   },
   mounted() {
     if(this.getCookie('HTuserName') && this.getCookie('HTpassWord')){
@@ -134,6 +138,11 @@ export default {
         this.login();
       }
     }
+
+    window.addEventListener('keydown',this.keyDown);//绑定监听事件
+  },
+  destroyed() {
+    window.removeEventListener('keydown',this.keyDown,false);//移除监听事件
   },
 };
 </script>

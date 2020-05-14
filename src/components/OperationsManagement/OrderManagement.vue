@@ -140,7 +140,7 @@
             </div>
             <div class="footer_page">
               <el-pagination
-                @size-change="handleSizeChange"
+                @size-change="handleSizeChange($event,value03,input0)"
                 @current-change="handleCurrentChange($event,value03,input0)"
                 :current-page.sync="currentPage"
                 :page-sizes="[10, 20, 30, 40, 50]"
@@ -200,7 +200,7 @@ export default {
     this.getInit();
   },
   methods: {
-    handleSizeChange(val) {
+    handleSizeChange(val,s,q) {
       // console.log(`每页 ${val} 条`);
       this.loading = true;
       axios({
@@ -210,6 +210,8 @@ export default {
           Authorization: getCookie(1001),
         },
         data: {
+          order_status: s,
+          station_name: q,
           pageNum: 1,
           pageSize: val,
         },
@@ -376,7 +378,8 @@ export default {
   padding-left: 2%;
 }
 .header_button {
-  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-around;
   box-sizing: border-box;
   float: right;
 }

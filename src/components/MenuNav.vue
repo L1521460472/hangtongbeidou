@@ -35,6 +35,9 @@
             <i class="el-icon-menu"></i>
             <span slot="title">供应商</span>
           </template>
+          <!-- <el-menu-item-group>
+            <el-menu-item index="/bdcx">bdcx</el-menu-item>
+          </el-menu-item-group> -->
         </el-submenu>
         <el-submenu index="4">
           <template slot="title">
