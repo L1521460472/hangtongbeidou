@@ -378,7 +378,6 @@ export default {
   padding-left: 2%;
 }
 .header_button {
-  flex-direction: column;
   justify-content: space-around;
   box-sizing: border-box;
   float: right;

@@ -358,7 +358,7 @@ export default {
   margin-right: 4%;
 }
 .header_data {
-  width: 60%;
+  width: 55%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -370,9 +370,8 @@ export default {
   width: 160px;
 }
 .header_button {
-  flex-direction: column;
-  justify-content: space-around;
   box-sizing: border-box;
+  justify-content: space-around;
 }
 .el-table__header >>> .el-table tr {
   background: #212121 !important;

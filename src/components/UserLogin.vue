@@ -73,7 +73,7 @@ export default {
         Axios.post("/rest/userapi/appLoginController/adminLogin", this.loginDTO)
           .then(result => {
             // console.log(result);
-            this.setCookie(1001,result.data.data.token,0.5);
+            this.setCookie(1001,result.data.data.token,30);
             this.setCookie('HTuserName',this.loginDTO.userName,1);
             if (result.data.code === 0 && result.status === 200) {
               Router.push({
