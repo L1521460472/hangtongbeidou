@@ -42,11 +42,13 @@ export default {
       }).then(result => {
         if (result.data.code === 0 && result.status === 200) {
           removeCookie(1001);
+          removeCookie(1002);
           Router.push({
             name: "UserLogin"
           });
         }else{
           removeCookie(1001);
+          removeCookie(1002);
           Router.push({
             name: "UserLogin"
           });

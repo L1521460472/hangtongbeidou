@@ -6,6 +6,9 @@
     </div>
     <el-button @click="btn" type="primary" round>改变class</el-button>
     <!-- <button >改变class</button> -->
+    <div style="height:300px;border:5px solid red">
+      vuex
+    </div>
   </div>
 </template>
 

@@ -26,7 +26,7 @@
                 v-model="value_end"
                 type="date"
                 placeholder="请选择结束时间"
-                :picker-options="pickerOptions"
+                :picker-options="pickerOptionEnd"
               >
               </el-date-picker>
             </div>
@@ -63,6 +63,7 @@
                 prop="realname"
                 min-width="110"
                 label="用户ID"
+                :show-overflow-tooltip='true'
               ></el-table-column>
               <el-table-column
                 prop="app_version"
@@ -150,6 +151,18 @@ export default {
           return time.getTime() > Date.now() - 8.64e6; //如果没有后面的-8.64e6就是不可以选择今天的
         },
       },
+      pickerOptionEnd:{
+          disabledDate: time => {
+          if (this.value_start) {
+            return (
+              time.getTime() > Date.now() ||
+              time.getTime() < new Date(this.value_start).getTime() - 8.64e6
+            );
+          } else {
+            return time.getTime() > Date.now();
+          }
+        }
+      },
       input1: "",
       value_start: "",
       value_end: "",
@@ -199,7 +212,7 @@ export default {
         startDate: start,
         endDate: end,
         pageNum:val,
-        pageSize:10
+        pageSize:this.pagesize
       }
     }).then((result)=>{
       // console.log(result.data)

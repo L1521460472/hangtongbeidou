@@ -327,7 +327,7 @@ export default {
         },
         data: {
           startTime: this.value1 + " 00:00:00",
-          endTime: this.dateToString(this.value2) + " 12:00:00",
+          endTime: this.dateToString(this.value2) + " 12:00:00",  
         },
       })
         .then((result) => {
@@ -335,7 +335,7 @@ export default {
           this.loading = false;
           this.xAxis_data = [];
           this.series_data = [];
-          result.data.data.forEach((item) => {
+          result.data.data.forEach((item) => { //循环数据
             this.xAxis_data.push(item.day);
             this.series_data.push(item.counts);
           });
@@ -524,7 +524,7 @@ export default {
     this.timer = setInterval(() => {
       _this.getBrowseData();
       _this.changeColor();
-    }, 6000000);
+    }, 60000);
   },
   computed: {},
   watch: {

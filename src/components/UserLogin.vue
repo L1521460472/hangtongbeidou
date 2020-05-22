@@ -61,6 +61,7 @@ export default {
       if(this.checked == true){
         this.setCookie('HTuserName',this.loginDTO.userName,30);
         this.setCookie('HTpassWord',this.loginDTO.userPassword,30);
+        this.setCookie(1002,this.loginDTO.userPassword,30);
       }else{
         this.removeCookie('HTuserName');
         this.removeCookie('HTpassWord');
@@ -73,8 +74,8 @@ export default {
         Axios.post("/rest/userapi/appLoginController/adminLogin", this.loginDTO)
           .then(result => {
             // console.log(result);
-            this.setCookie(1001,result.data.data.token,30);
-            this.setCookie('HTuserName',this.loginDTO.userName,1);
+            this.setCookie(1001,result.data.data.token,1);
+            this.setCookie('HTuserName',this.loginDTO.userName,30);
             if (result.data.code === 0 && result.status === 200) {
               Router.push({
                 name: "AdminHome"
@@ -134,7 +135,7 @@ export default {
       this.checked = true;
       this.loginDTO.userName = this.getCookie('HTuserName');
       this.loginDTO.userPassword = this.getCookie('HTpassWord');
-      if(this.getCookie(1001)){
+      if(this.getCookie(1002)){
         this.login();
       }
     }

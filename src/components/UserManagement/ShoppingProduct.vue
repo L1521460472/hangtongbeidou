@@ -138,6 +138,29 @@
         </el-col>
       </el-row>
     </div>
+
+    <!-- <el-dialog
+  title="修改充值产品"
+  :visible.sync="centerDialogVisible"
+  width="30%"
+  center>
+  <div class="input">设定金额 <el-input v-model="input" size='mini' clearable placeholder="请输入内容"></el-input></div>
+  <div class="select">
+    优惠折扣 <el-select v-model="value" placeholder="请选择">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+  </div>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="isYes()" type="primary">确定</el-button>
+    <el-button @click="isNo()">取消</el-button>
+  </span>
+</el-dialog> -->
+
   </div>
 </template>
 <script>
@@ -163,9 +186,22 @@ export default {
         desc: "",
       },
       formLabelWidth: "120px",
+      centerDialogVisible:false,
       loading: true,
       nav1:true,
       nav2:false,
+      input:'',
+      value:'',
+      options: [
+        {
+          value: "0",
+          label: "无",
+        },
+        {
+          value: "1",
+          label: "8折",
+        },
+      ],
     };
   },
   methods: {
@@ -252,16 +288,28 @@ export default {
     },
     handleModification(index, row) {
       // console.log(index, row);
+      // console.log(row.money);
+
       const h = this.$createElement;
+      var that = this;
+      that.desc = row.money;
+      if(row.discount == 1){
+        that.resource = '无'
+      }else{
+        that.resource = '8折'
+      }
+      // console.log(that.resource)
       this.$msgbox({
         title: "消息",
         message: h("div", {class:'bbb'}, [
           h("span", { style: "font-size:12px;color:rgba(255,255,255,0.8);margin-right:10px;display: inline-block;width:80px;height:30px;text-align: right;" }, "设定金额"),
-          h("input", { class:'input', style: "width:138px;height:28px;background-color:rgba(10,10,10,0.4);border:1px solid rgba(164,164,164,0.4);color:rgba(255,255,255,0.8)" }, ""),
+          h("input", { class:'input', style: "width:138px;height:28px;background-color:rgba(10,10,10,0.4);border:1px solid rgba(164,164,164,0.4);color:rgba(255,255,255,0.8)",attrs: { value: that.desc, id:"hinput"},
+            },''),
           h("p", {style:'margin-bottom:1px'}, ""),
           h("span", { style: "font-size:12px;color:rgba(255,255,255,0.8);margin-right:10px;display: inline-block;width:80px;height:30px;text-align: right;" }, "优惠折扣"),
-          h("select", { class:'select01', style: "width:138px;height:28px;background-color:rgba(10,10,10,0.4);border:1px solid rgba(164,164,164,0.4);color:rgba(255,255,255,0.8)" }, [
-            h("option", {style:'background:#313131;'}, "无"),
+          h("select", { class:'select01', style: "width:138px;height:28px;background-color:rgba(10,10,10,0.4);border:1px solid rgba(164,164,164,0.4);color:rgba(255,255,255,0.8)", attrs: { value: that.resource,id:"select"}, }, [
+            h("option", {style:'background:#313131;display:none;'},that.resource),
+             h("option", {style:'background:#313131;'}, "无"),
             h("option", {style:'background:#313131;'}, "8折")
           ]),
           h("p", {style:'margin-bottom:1px'}, ""),
@@ -269,6 +317,7 @@ export default {
         showCancelButton: true,
         confirmButtonText: "确定",
         cancelButtonText: "取消",
+        closeOnClickModal:false,
       }).then(() => {
           if(document.getElementsByClassName('input')[0].value == ''){
           this.$message({
@@ -336,6 +385,7 @@ export default {
     }
   },
   mounted() {
+
     axios({
       method:'post',
       url:'/rest/chargeapi/sysProductController/chargeTypeList',
@@ -398,5 +448,39 @@ export default {
 .statedd {
   color: #fff;
   opacity: 0.8;
+}
+
+.el-dialog__wrapper>>>.el-dialog{
+  width: 300px !important;
+  height: 200px;
+  background: #212121;
+  margin-top: 35vh !important;
+}
+.el-button{
+  padding: 0;
+  font-size: 12px !important;
+}
+.el-dialog__wrapper>>>.el-dialog>>>.el-dialog__header>>>.el-dialog__title{
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, .8) !important;
+}
+.el-dialog__body{
+  padding: 0;
+}
+.el-dialog__body >>> .el-input {
+  width: 160px !important;
+}
+.input{
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, .8);
+}
+.select{
+  font-size: 12px;
+  color: rgba(255, 255, 255, .8);
+}
+.btn-custom-cancel {
+  float: right;
+  margin-left: 10px;
 }
 </style>

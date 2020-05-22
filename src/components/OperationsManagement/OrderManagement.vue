@@ -67,6 +67,11 @@
                 style="width: 100%; height: 100%;"
               >
                 <el-table-column
+                  prop="number"
+                  min-width="80"
+                  label="序号"
+                ></el-table-column>
+                <el-table-column
                   prop="order_no"
                   min-width="130"
                   label="订单号"
@@ -78,7 +83,7 @@
                 ></el-table-column>
                 <el-table-column
                   prop="station_name"
-                  min-width="120"
+                  min-width="130"
                   label="站点名称"
                 ></el-table-column>
                 <el-table-column
@@ -241,7 +246,7 @@ export default {
           order_status: s,
           station_name: q,
           pageNum: val,
-          pageSize: 10,
+          pageSize: this.pagesize,
         },
       })
         .then((result) => {

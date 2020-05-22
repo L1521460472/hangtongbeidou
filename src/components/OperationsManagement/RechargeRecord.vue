@@ -31,7 +31,7 @@
                 v-model="value_end"
                 type="date"
                 placeholder="请选择结束时间"
-                :picker-options="pickerOptions"
+                :picker-options="pickerOptionEnd"
               >
               </el-date-picker>
             </div>
@@ -76,6 +76,11 @@
                 "
                 style="width: 100%;height:100%"
               >
+                <el-table-column
+                  prop="number"
+                  min-width="80"
+                  label="序号"
+                ></el-table-column>
                 <el-table-column
                   prop="order_no"
                   min-width="130"
@@ -180,6 +185,18 @@ export default {
           return time.getTime() > Date.now() - 8.64e6; //如果没有后面的-8.64e6就是不可以选择今天的
         },
       },
+      pickerOptionEnd:{
+          disabledDate: time => {
+          if (this.value_start) {
+            return (
+              time.getTime() > Date.now() ||
+              time.getTime() < new Date(this.value_start).getTime()
+            );
+          } else {
+            return time.getTime() > Date.now();
+          }
+        }
+      },
       input0:"",
       input: "",
       value_start: "",
@@ -235,7 +252,7 @@ export default {
         startDate: q,
         endDate: m,
         pageNum:val,
-        pageSize:10
+        pageSize:this.pagesize
       }
     })
     .then((result)=>{
@@ -272,7 +289,9 @@ export default {
         }else{
           this.value_end = dateToString(this.value_end);
         }
-      } 
+      }
+
+      
       //发送请求
       axios({
         method:'post',
@@ -335,6 +354,12 @@ export default {
     },
     reset(){
       this.getInit();
+    },
+    btnChange(){
+      if(this.value_start > this.value_end){
+        alert('111');
+        return
+      }
     }
   },
   mounted() {
