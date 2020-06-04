@@ -16,36 +16,12 @@
                 prop="name"
                 label="充值产品"
               >
-                <!-- <template slot-scope="scope">
-                  <span
-                    v-if="scope.row.status == 0"
-                    style="opacity:0.8;"
-                    >{{ scope.row.name }}</span
-                  >
-                  <span
-                    v-if="scope.row.status == 1"
-                    style="opacity:0.2;"
-                    >{{ scope.row.name }}</span
-                  >
-                </template> -->
               </el-table-column>
               <el-table-column
                 prop="money"
                 min-width="100"
                 label="设定金额/元"
               >
-                <!-- <template slot-scope="scope">
-                  <span
-                    v-if="scope.row.status == 0"
-                    style="opacity:0.8;"
-                    >{{ scope.row.money }}</span
-                  >
-                  <span
-                    v-if="scope.row.status == 1"
-                    style="opacity:0.2;"
-                    >{{ scope.row.money }}</span
-                  >
-                </template> -->
               </el-table-column>
               <el-table-column
                 label="优惠折扣"
@@ -65,36 +41,12 @@
                 prop="amount"
                 label="实际扣费"
               >
-                <!-- <template slot-scope="scope">
-                  <span
-                    v-if="scope.row.status == 0"
-                    style="opacity:0.8;"
-                    >{{ scope.row.amount }}</span
-                  >
-                  <span
-                    v-if="scope.row.status == 1"
-                    style="opacity:0.2;"
-                    >{{ scope.row.amount }}</span
-                  >
-                </template> -->
               </el-table-column>
               <el-table-column
                 prop="update_time"
                 min-width="160"
                 label="最后更新时间"
               >
-                <!-- <template slot-scope="scope">
-                  <span
-                    v-if="scope.row.status == 0"
-                    style="opacity:0.8;"
-                    >{{ scope.row.update_time }}</span
-                  >
-                  <span
-                    v-if="scope.row.status == 1"
-                    style="opacity:0.2;"
-                    >{{ scope.row.update_time }}</span
-                  >
-                </template> -->
               </el-table-column>
               <el-table-column label="状态">
                 <template slot-scope="scope">
@@ -138,29 +90,6 @@
         </el-col>
       </el-row>
     </div>
-
-    <!-- <el-dialog
-  title="修改充值产品"
-  :visible.sync="centerDialogVisible"
-  width="30%"
-  center>
-  <div class="input">设定金额 <el-input v-model="input" size='mini' clearable placeholder="请输入内容"></el-input></div>
-  <div class="select">
-    优惠折扣 <el-select v-model="value" placeholder="请选择">
-    <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
-  </div>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="isYes()" type="primary">确定</el-button>
-    <el-button @click="isNo()">取消</el-button>
-  </span>
-</el-dialog> -->
-
   </div>
 </template>
 <script>
@@ -287,9 +216,6 @@ export default {
       }
     },
     handleModification(index, row) {
-      // console.log(index, row);
-      // console.log(row.money);
-
       const h = this.$createElement;
       var that = this;
       that.desc = row.money;
@@ -317,7 +243,7 @@ export default {
         showCancelButton: true,
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal:false,
+        closeOnClickModal:false,//点击空白处不会消失
       }).then(() => {
           if(document.getElementsByClassName('input')[0].value == ''){
           this.$message({
@@ -413,6 +339,7 @@ export default {
 #header {
   width: 100%;
   height: 100%;
+  /* min-width:1116px; */
 }
 .header {
   width: 100%;

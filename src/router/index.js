@@ -59,13 +59,28 @@ const routes = [
       {
         path:'/ShoppingProduct',
         name:'ShoppingProduct',
-        component:()=>import('../components/UserManagement/ShoppingProduct')
+        component:()=>import('../components/ActivityManagement/ShoppingProduct')
       },
-      // {
-      //   path:'/bdcx',
-      //   name:'bdcx',
-      //   component:()=>import('../components/bdcx')
-      // },
+      {
+        path:'/DiscountConfiguration',
+        name:'DiscountConfiguration',
+        component:()=>import('../components/ActivityManagement/DiscountConfiguration')
+      },
+      {
+        path:'/VoucherAllocation',
+        name:'VoucherAllocation',
+        component:()=>import('../components/ActivityManagement/VoucherAllocation')
+      },
+      {
+        path:'/VoucherManagement',
+        name:'VoucherManagement',
+        component:()=>import('../components/ActivityManagement/VoucherManagement')
+      },
+      {
+        path:'/CreateVoucher',
+        name:'CreateVoucher',
+        component:()=>import('../components/ActivityManagement/CreateVoucher')
+      },
     ]
   },
 ]

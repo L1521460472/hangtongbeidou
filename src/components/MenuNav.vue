@@ -35,9 +35,7 @@
             <i class="el-icon-menu"></i>
             <span slot="title">供应商</span>
           </template>
-          <!-- <el-menu-item-group>
-            <el-menu-item index="/bdcx">bdcx</el-menu-item>
-          </el-menu-item-group> -->
+          
         </el-submenu>
         <el-submenu index="4">
           <template slot="title">
@@ -53,10 +51,28 @@
           <el-menu-item-group>
             <el-menu-item index="/UserAdmin">用户信息</el-menu-item>
           </el-menu-item-group>
-          <el-menu-item-group>
-            <el-menu-item index="/ShoppingProduct">产品充值</el-menu-item>
-          </el-menu-item-group>
         </el-submenu>
+        <el-submenu index="6">
+          <template slot="title">
+            <i class="el-icon-s-custom"></i>
+            <span slot="title">活动管理</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item index="/ShoppingProduct">产品充值配置</el-menu-item>
+          </el-menu-item-group>
+          <el-menu-item-group>
+            <el-menu-item index="/DiscountConfiguration">充电折扣配置</el-menu-item>
+          </el-menu-item-group>
+          <el-menu-item-group>
+            <el-menu-item index="/VoucherAllocation">代金券配置</el-menu-item>
+          </el-menu-item-group>
+          <el-menu-item-group>
+            <el-menu-item index="/VoucherManagement">代金券管理</el-menu-item>
+          </el-menu-item-group>
+          <el-menu-item-group>
+            <el-menu-item index="/CreateVoucher">代金券</el-menu-item>
+          </el-menu-item-group>
+        </el-submenu>         
       </el-menu>
     </div>
 </template>

@@ -362,26 +362,26 @@ export default {
           var sysData = result.data.data.sysData;
 
           //sysOrder
-          this.todayOrder = sysOrder.todayOrder;
-          this.todayRevenue = sysOrder.todayRevenue;
-          this.weekOrder = sysOrder.weekOrder;
-          this.weekRevenue = sysOrder.weekRevenue;
-          this.monthOrder = sysOrder.monthOrder;
-          this.monthRevenue = sysOrder.monthRevenue;
-          this.todayOrderRatio = sysOrder.todayOrderRatio;
-          this.todayRevenueRatio = sysOrder.todayRevenueRatio;
-          this.weekOrderRatio = sysOrder.weekOrderRatio;
-          this.weekRevenueRatio = sysOrder.weekRevenueRatio;
-          this.monthOrderRatio = sysOrder.monthOrderRatio;
-          this.monthRevenueRatio = sysOrder.monthRevenueRatio;
+          this.todayOrder = sysOrder.todayOrder;//今日订单
+          this.todayRevenue = sysOrder.todayRevenue;//今日营收
+          this.weekOrder = sysOrder.weekOrder;//本周订单
+          this.weekRevenue = sysOrder.weekRevenue;//本周营收
+          this.monthOrder = sysOrder.monthOrder;//本月订单
+          this.monthRevenue = sysOrder.monthRevenue;//本月营收
+          this.todayOrderRatio = sysOrder.todayOrderRatio;//今日订单环比
+          this.todayRevenueRatio = sysOrder.todayRevenueRatio;//今日营收环比
+          this.weekOrderRatio = sysOrder.weekOrderRatio;//本周订单环比
+          this.weekRevenueRatio = sysOrder.weekRevenueRatio;//本周营收环比
+          this.monthOrderRatio = sysOrder.monthOrderRatio;//本月订单环比
+          this.monthRevenueRatio = sysOrder.monthRevenueRatio;//本月营收环比
 
           //sysData
-          this.totalOrder = sysData.totalOrder;
-          this.accumulativeCharge = sysData.accumulativeCharge;
-          this.cumulativeRevenue = sysData.cumulativeRevenue;
-          this.cumulativeUsers = sysData.cumulativeUsers;
-          this.supplier = sysData.supplier;
-          this.site = sysData.site;
+          this.totalOrder = sysData.totalOrder;//订单总量
+          this.accumulativeCharge = sysData.accumulativeCharge;//累计充电量
+          this.cumulativeRevenue = sysData.cumulativeRevenue;//累计营收
+          this.cumulativeUsers = sysData.cumulativeUsers;//累计用户量
+          this.supplier = sysData.supplier;//供应商企业
+          this.site = sysData.site;//充电站点
 
           //sysStation
           this.totalNum = sysStation.totalNum; //充电桩总数

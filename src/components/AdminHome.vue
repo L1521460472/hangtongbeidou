@@ -8,8 +8,8 @@
                 <el-aside style="width:200px;min-height:705px;">
                     <menu-nav></menu-nav>
                 </el-aside>
-                <el-main style="width:calc(100% - 200px);background: #000;min-height:705px;">
-                    <keep-alive>
+                <el-main style="width:calc(100% - 200px);background: #000;min-width:1116px;min-height:705px;">
+                    <keep-alive exclude="HomeIndex">
                       <router-view />
                     </keep-alive>                   
                 </el-main>
