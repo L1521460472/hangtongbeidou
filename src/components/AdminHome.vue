@@ -9,7 +9,7 @@
                     <menu-nav></menu-nav>
                 </el-aside>
                 <el-main style="width:calc(100% - 200px);background: #000;min-width:1116px;min-height:705px;">
-                    <keep-alive exclude="HomeIndex">
+                    <keep-alive exclude="HomeIndex,VoucherAllocation">
                       <router-view />
                     </keep-alive>                   
                 </el-main>
