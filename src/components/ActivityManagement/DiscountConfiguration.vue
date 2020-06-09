@@ -22,6 +22,7 @@
                     v-model.number="value1"
                     size="mini"
                     :disabled="falg"
+                    :class="{active:isActive}"
                     placeholder="例如：0.92"
                     @change="proving1()"
                   ></el-input>
@@ -36,6 +37,7 @@
                   v-model.number="value2"
                   size="mini"
                   :disabled="falg"
+                  :class="{active:isActive}"
                   placeholder="例如：0.97"
                   @change="proving2()"
                 ></el-input>
@@ -54,6 +56,7 @@
                   v-model.number="value3"
                   size="mini"
                   :disabled="falg"
+                  :class="{active:isActive}"
                   placeholder="例如：0.98"
                   @change="proving3()"
                 ></el-input>
@@ -92,6 +95,7 @@ export default {
       mes1: "",
       mes2: "",
       mes3: "",
+      isActive:true,
     };
   },
   methods: {
@@ -118,6 +122,7 @@ export default {
     },
     edit() {
       this.falg = false;
+      this.isActive = false;
     },
     open() {
       console.log(this.value1, this.value2, this.value3);
@@ -255,6 +260,7 @@ export default {
                 message: "修改成功!",
                 center: true,
               });
+              this.isActive = true;
             })
             .catch((err) => {
               console.log(err);
@@ -293,10 +299,12 @@ export default {
       var _this = this;
       if (_this.value1 == "") {
         _this.falg = false; //input可编辑
+        this.isActive = false;
       } else {
         _this.falg = true; //input禁用
+        this.isActive = true;
       }
-    }, 200);
+    }, 300);
   },
 };
 </script>
@@ -486,5 +494,8 @@ export default {
 .message_p {
   background: #313131;
   margin-top: 5px;
+}
+.active{
+  background: rgba(160,160,160,0.4);
 }
 </style>

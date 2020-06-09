@@ -108,7 +108,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="denomination"
-                  min-width="80"
+                  min-width="90"
                   label="总面值/元"
                 ></el-table-column>
                 <el-table-column prop="status" min-width="80" label="状态">
@@ -305,6 +305,10 @@ export default {
     },
     reset() {
       this.getData();
+      this.value_start = '';
+      this.value01 = '';
+      this.value02 = '';
+      this.input1 = '';
     },
     getData() {
       axios({

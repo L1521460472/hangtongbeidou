@@ -6,7 +6,7 @@
         <div class="sub-title">*名称</div>
         <el-input
           v-model="value01"
-          placeholder="请输入用户账号"
+          placeholder="请输入名称"
           clearable
         ></el-input>
       </div>
@@ -91,7 +91,7 @@ export default {
   data() {
     return {
       value01: "", //名称
-      value02: "", //名称
+      value02: "", //有效期
       value11: "", //金额
       value12: "", //门槛
       value13: "", //描述
@@ -135,11 +135,18 @@ export default {
     };
   },
   methods: {
-    confirm() {
-      //确认
+    confirm() {//确认创建
+      if(this.value01 == '' || this.value11 == '' || this.value12 == '' || this.value14 == ''){
+        this.$message({
+            type: "error",
+            message: "有必填项未填写，请填写完整!",
+            center: true,
+          });
+          return
+      }
       const h = this.$createElement; //创建弹框
       this.$msgbox({
-        title: "请确定以下更改内容",
+        title: "提示",
         message: h(
           "div",
           { style: "height:100px;box-sizing: border-box;padding-top: 30px;" },
@@ -159,7 +166,7 @@ export default {
               name: this.value01, //名称
               // expireTime:'', //过期时间,如果为空就表示不限制
               denomination: this.value11, //面额,单位元
-              useThreshold: this.value12, //使用门槛,单位元
+              useThreshold: this.value12, //使用门槛,单位元 
               description: this.value13, //描述
               number: this.value14, //张数
               availableUser: "1", //可领取用户 1:不限制
@@ -201,6 +208,12 @@ export default {
     },
     cancel() {
       //取消
+      this.value01 = "";
+      this.value02 = "";
+      this.value11 = "";
+      this.value12 = "";
+      this.value13 = "";
+      this.value14 = "";
       this.$router.push("VoucherAllocation");
     },
   },

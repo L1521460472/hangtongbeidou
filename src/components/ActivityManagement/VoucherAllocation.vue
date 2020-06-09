@@ -217,7 +217,6 @@
                 </el-table-column>
               </el-table>
             </div>
-
             <div class="footer_page">
               <el-pagination
                 @size-change="handleSizeChange($event, value02, value_start, value_end)"
@@ -346,13 +345,16 @@ export default {
     },
     reset() {
       this.getData();
+      this.value02 = '';
+      this.value_start = '';
+      this.value_end = '';
     },
     creation() {
       this.$router.push("CreateVoucher");
     },
     handleDisable(index, row) {
       // var _this = this;
-      // console.log(index, row);
+      // console.log(index,row);
       if (row.status == 0) {
         this.$confirm("确定要禁用当前产品？", "提示", {
           confirmButtonText: "确定",
@@ -367,8 +369,7 @@ export default {
                 Authorization: getCookie(1001),
               },
               data: {
-                id: index + 1,
-                // status: 1,
+                id: row.id,
               },
             })
               .then((result) => {
@@ -405,8 +406,7 @@ export default {
                 Authorization: getCookie(1001),
               },
               data: {
-                id: index + 1,
-                // status: 0,
+                id: row.id,
               },
             })
               .then((result) => {
