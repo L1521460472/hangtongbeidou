@@ -74,22 +74,26 @@
                   prop="id"
                   min-width="80"
                   label="序号"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="user_id"
                   min-width="80"
                   label="用户ID"
+                  align="center"
                   :show-overflow-tooltip="true"
                 ></el-table-column>
                 <el-table-column
                   prop="username"
                   min-width="100"
                   label="用户账号"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="plat_type"
                   min-width="80"
                   label="平台类型"
+                  align="center"
                 >
                   <template slot-scope="scope">
                     <span v-if="scope.row.plat_type == 1">新能源</span>
@@ -101,7 +105,7 @@
                     <span v-if="scope.row.plat_type == 7">城配司机</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" min-width="80" label="类型">
+                <el-table-column prop="type" min-width="80" label="类型" align="center">
                   <template slot-scope="scope">
                     <span v-if="scope.row.type == 1">代金券</span>
                   </template>
@@ -110,8 +114,9 @@
                   prop="denomination"
                   min-width="90"
                   label="总面值/元"
+                  align="center"
                 ></el-table-column>
-                <el-table-column prop="status" min-width="80" label="状态">
+                <el-table-column prop="status" min-width="80" label="状态" align="center">
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 0">未使用</span>
                     <span v-if="scope.row.status == 1">已使用</span>
@@ -122,6 +127,7 @@
                   prop="is_enabled"
                   min-width="80"
                   label="是否禁用"
+                  align="center"
                 >
                   <template slot-scope="scope">
                     <span v-if="scope.row.is_enabled == 0">启用</span>
@@ -132,11 +138,13 @@
                   prop="get_time"
                   min-width="130"
                   label="领取时间"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="use_time"
                   min-width="130"
                   label="使用时间"
+                  align="center"
                 ></el-table-column>
               </el-table>
             </div>
@@ -305,10 +313,6 @@ export default {
     },
     reset() {
       this.getData();
-      this.value_start = '';
-      this.value01 = '';
-      this.value02 = '';
-      this.input1 = '';
     },
     getData() {
       axios({
@@ -329,6 +333,10 @@ export default {
           this.total = result.data.data.totalNum;
           this.pagesize = result.data.data.pageSize;
           this.currentPage = result.data.data.pageNum;
+          this.value_start = '';
+          this.value01 = '';
+          this.value02 = '';
+          this.input1 = '';
         })
         .catch((err) => {
           this.loading = false;
@@ -348,7 +356,7 @@ export default {
           type: type,
           status: status,
           use_date: time,
-          pageNum: 1,
+          pageNum: this.currentPage,
           pageSize: val,
         },
       })
@@ -397,7 +405,7 @@ export default {
     },
   },
   mounted() {
-    this.loading = false;
+    // this.loading = false;
     this.getData();
   },
 };

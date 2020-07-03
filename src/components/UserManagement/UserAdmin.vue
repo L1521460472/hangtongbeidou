@@ -5,10 +5,22 @@
         <el-col :span="24">
           <div class="header_nav">
             <div class="header_select">
-                <span>手机号码</span>
+              <span>平台类型</span>
+              <el-select v-model="value01" placeholder="请选择">
+                <el-option
+                  v-for="item in options01"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <div class="header_select">
+                <span>用户账号</span>
                 <el-input
                   v-model="input1"
-                  placeholder="请输入手机号"
+                  placeholder="请输入用户账号"
                   clearable
                 ></el-input>
             </div>
@@ -58,54 +70,80 @@
                 prop="number"
                 min-width="80"
                 label="序号"
+                align="center"
               ></el-table-column>
               <el-table-column
                 prop="realname"
                 min-width="110"
                 label="用户ID"
+                align="center"
                 :show-overflow-tooltip='true'
               ></el-table-column>
               <el-table-column
                 prop="app_version"
                 min-width="100"
                 label="APP版本号"
+                align="center"
               ></el-table-column>
               <el-table-column
                 prop="phone"
                 min-width="110"
                 label="手机号码"
+                align="center"
               ></el-table-column>
               <el-table-column
                 prop="username"
                 min-width="100"
                 label="用户账号"
+                align="center"
               ></el-table-column>
               <el-table-column
-                prop="balance"
-                min-width="90"
-                label="用户余额/元"
-              ></el-table-column>
+                prop="plat_type"
+                min-width="100"
+                label="平台类型"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.plat_type == 1">新能源</span>
+                  <span v-if="scope.row.plat_type == 2">深圳vms</span>
+                  <span v-if="scope.row.plat_type == 3">南宁vms</span>
+                  <span v-if="scope.row.plat_type == 4">个人用户</span>
+                  <span v-if="scope.row.plat_type == 5">城配货主</span>
+                  <span v-if="scope.row.plat_type == 6">城配车主</span>
+                  <span v-if="scope.row.plat_type == 7">城配司机</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 prop="register_time"
                 min-width="150"
                 label="注册时间"
+                align="center"
               ></el-table-column>
               <el-table-column
                 prop="total_order"
                 min-width="100"
                 label="历史订单/条"
+                align="center"
               ></el-table-column>
               <el-table-column
                 prop="total_recharge"
                 min-width="90"
                 label="累计充值/元"
+                align="center"
               ></el-table-column>
               <el-table-column
                 prop="total_fee"
                 min-width="90"
                 label="累计消费/元"
+                align="center"
               ></el-table-column>
-              <el-table-column min-width="250" label="操作">
+              <el-table-column
+                prop="balance"
+                min-width="90"
+                label="用户余额/元"
+                align="center"
+              ></el-table-column>
+              <el-table-column min-width="160" label="操作" align="center">
                 <template slot-scope="scope">
                   <span class="particulars"
                     @click="handleEdit(scope.$index, scope.row)"
@@ -122,8 +160,8 @@
 
             <div class="footer_page">
               <el-pagination
-                @size-change="handleSizeChange($event,value_start,value_end)"
-                @current-change="handleCurrentChange($event,value_start,value_end)"
+                @size-change="handleSizeChange($event,value01,value_start,value_end)"
+                @current-change="handleCurrentChange($event,value01,value_start,value_end)"
                 :current-page="currentPage"
                 :page-sizes="[10, 20, 30, 40, 50]"
                 :page-size="pagesize"
@@ -163,6 +201,41 @@ export default {
           }
         }
       },
+      options01: [
+        {
+          value: "",
+          label: "全部",
+        },
+        {
+          value: "1",
+          label: "新能源",
+        },
+        {
+          value: "2",
+          label: "深圳vms",
+        },
+        {
+          value: "3",
+          label: "南宁vms",
+        },
+        {
+          value: "4",
+          label: "个人用户",
+        },
+        {
+          value: "5",
+          label: "城配货主",
+        },
+        {
+          value: "6",
+          label: "城配车主",
+        },
+        {
+          value: "7",
+          label: "城配司机",
+        },
+      ],
+      value01: "",
       input1: "",
       value_start: "",
       value_end: "",
@@ -174,7 +247,7 @@ export default {
     };
   },
   methods: {
-    handleSizeChange(val,start,end) {
+    handleSizeChange(val,val01,start,end) {
       // console.log(`每页 ${val} 条`);
       axios({
       method:'post',
@@ -183,6 +256,7 @@ export default {
         Authorization:getCookie(1001)
       },
       data:{
+        plat_type:val01,
         startDate: start,
         endDate: end,
         pageNum:1,
@@ -200,7 +274,7 @@ export default {
       console.error(err)
     })
     },
-    handleCurrentChange(val,start,end) {
+    handleCurrentChange(val,val01,start,end) {
       // console.log(`当前页: ${val}`);
       axios({
       method:'post',
@@ -209,6 +283,7 @@ export default {
         Authorization:getCookie(1001)
       },
       data:{
+        plat_type:val01,
         startDate: start,
         endDate: end,
         pageNum:val,
@@ -270,7 +345,8 @@ export default {
         Authorization:getCookie(1001)
       },
       data:{
-        phone: this.input1,
+        plat_type:this.value01,
+        username: this.input1,
         startDate: this.value_start,
         endDate: this.value_end,
         pageNum:1,
@@ -307,6 +383,7 @@ export default {
       this.pagesize = result.data.data.pageSize;
       this.currentPage = result.data.data.pageNum;
       this.input1 = '';
+      this.value01 = '';
       this.value_start = '';
       this.value_end = '';
     }).catch((err)=>{
@@ -350,16 +427,36 @@ export default {
   background: #212121;
   border-radius: 6px;
 }
+#demonstration {
+  margin-left: 2%;
+}
+.demonstration {
+  font-size: 12px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  opacity: 0.8;
+  margin-right: 2%;
+}
+.sub-title {
+  font-size: 12px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  opacity: 0.8;
+  margin-right: 4%;
+  margin-top: 2%;
+}
 #span {
   opacity: 0;
 }
 .header_select {
-  width: 30%;
+  width: 22.5%;
   height: 100%;
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  padding-left: 4%;
+  padding-left: 2%;
   float: left;
 }
 .header_select span {
@@ -371,12 +468,12 @@ export default {
   margin-right: 4%;
 }
 .header_data {
-  width: 55%;
+  width: 40%;
   height: 100%;
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  padding-left: 4%;
+  padding-left: 2%;
   float: left;
 }
 .el-input {

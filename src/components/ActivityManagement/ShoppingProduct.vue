@@ -15,16 +15,19 @@
               <el-table-column
                 prop="name"
                 label="充值产品"
+                align="center"
               >
               </el-table-column>
               <el-table-column
                 prop="money"
                 min-width="100"
                 label="设定金额/元"
+                align="center"
               >
               </el-table-column>
               <el-table-column
                 label="优惠折扣"
+                align="center"
               >
                 <template slot-scope="scope">
                   <span
@@ -40,15 +43,17 @@
               <el-table-column
                 prop="amount"
                 label="实际扣费"
+                align="center"
               >
               </el-table-column>
               <el-table-column
                 prop="update_time"
                 min-width="160"
                 label="最后更新时间"
+                align="center"
               >
               </el-table-column>
-              <el-table-column label="状态">
+              <el-table-column label="状态" align="center">
                 <template slot-scope="scope">
                   <span
                     v-if="scope.row.status == 0"
@@ -62,7 +67,7 @@
                   >
                 </template>
               </el-table-column>
-              <el-table-column min-width="150" label="操作">
+              <el-table-column min-width="150" label="操作" align="center">
                 <template slot-scope="scope">
                   <span
                     class="particulars"

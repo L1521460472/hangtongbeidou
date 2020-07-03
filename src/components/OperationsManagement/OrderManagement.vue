@@ -4,18 +4,15 @@
       <el-row>
         <el-col :span="24">
           <div class="header_nav">
-            <!-- <div class="header_select">
-              <div class="sub-title">选择区域</div>
-              <el-select v-model="value01" placeholder="请选择">
-                <el-option
-                  v-for="item in options01"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-            </div> -->
+            <div class="header_navTop">
+              <div class="header_select">
+              <div class="sub-title">用户账号</div>
+              <el-input
+                v-model="input1"
+                placeholder="请输入用户账号"
+                clearable
+              ></el-input>
+            </div>
             <div class="header_select">
               <div class="sub-title">订单状态</div>
               <el-select v-model="value03" placeholder="请选择">
@@ -44,7 +41,8 @@
                 clearable
               ></el-input>
             </div>
-            <div class="header_button">
+            </div>
+            <div class="header_navButtom">
               <button @click="search_table">查询</button>
               <button @click="reset">重置</button>
             </div>
@@ -70,52 +68,96 @@
                   prop="number"
                   min-width="80"
                   label="序号"
+                  align="center"
                 ></el-table-column>
+                <el-table-column
+                  prop="user_id"
+                  min-width="110"
+                  label="用户ID"
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  prop="username"
+                  min-width="100"
+                  label="用户账号"
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  prop="plat_type"
+                  min-width="80"
+                  label="平台类型"
+                  align="center"
+                >
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.plat_type == 1">新能源</span>
+                    <span v-if="scope.row.plat_type == 2">深圳vms</span>
+                    <span v-if="scope.row.plat_type == 3">南宁vms</span>
+                    <span v-if="scope.row.plat_type == 4">个人用户</span>
+                    <span v-if="scope.row.plat_type == 5">城配货主</span>
+                    <span v-if="scope.row.plat_type == 6">城配车主</span>
+                    <span v-if="scope.row.plat_type == 7">城配司机</span>
+                  </template>
+                </el-table-column>
                 <el-table-column
                   prop="order_no"
                   min-width="130"
                   label="订单号"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="service_no"
                   min-width="165"
                   label="服务单号"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="station_name"
                   min-width="130"
                   label="站点名称"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="device_sn"
                   min-width="135"
                   label="桩号"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="nozzle_no"
                   min-width="80"
                   label="枪号"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="start_time"
                   min-width="150"
                   label="充电时间"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="degree"
                   min-width="90"
                   label="已充电量/度"
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  prop="deduct_our"
+                  min-width="90"
+                  label="折扣优惠/元"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="pay_money"
                   min-width="80"
                   label="总费用/元"
+                  align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="order_status"
                   class="order_status"
                   min-width="80"
                   label="订单状态"
+                  align="center"
                 >
                   <template slot-scope="scope">
                     <span v-if="scope.row.order_status == 0" class="stated"
@@ -135,7 +177,7 @@
                     >
                   </template>
                 </el-table-column>
-                <el-table-column min-width="80" label="支付状态">
+                <el-table-column min-width="80" label="支付状态" align="center">
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 1">未支付</span>
                     <span v-if="scope.row.status == 2">-</span>
@@ -193,6 +235,7 @@ export default {
       ],
       value03: "",
       input0: "",
+      input1: "",
       input: "",
       dataList: [],
       currentPage: 1,
@@ -272,6 +315,7 @@ export default {
           Authorization: getCookie(1001),
         },
         data: {
+          username:this.input1,
           order_status: this.value03,
           station_name: this.input0,
           order_no: this.input,
@@ -316,6 +360,7 @@ export default {
         this.value03 = '';
         this.input = '';
         this.input0 = '';
+        this.input1 = '';
       })
       .catch((err) => {
         this.loading = false;
@@ -344,7 +389,7 @@ export default {
 .header {
   width: 100%;
   min-width: 1116px;
-  height: 112px;
+  height: 150px;
   box-sizing: border-box;
   background: #000;
   padding: 16px;
@@ -359,11 +404,35 @@ export default {
 }
 .header_nav {
   width: 100%;
-  min-height: 80px;
   height: 100%;
-  box-sizing: border-box;
   background: #212121;
   border-radius: 6px;
+}
+#span {
+  opacity: 0;
+}
+.header_navTop {
+  width: 100%;
+  height: 50%;
+}
+.header_navButtom {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding-left: 40px;
+}
+.header_navButtom button {
+  width: 80px;
+  height: 34px;
+  background: #c79659;
+  border-radius: 6px;
+  border: 1px solid #c79659;
+  font-size: 14px;
+  color: #212121;
+  cursor: pointer;
+  margin-right: 10px;
 }
 .sub-title {
   font-size: 12px;
@@ -374,18 +443,30 @@ export default {
   margin-right: 6%;
 }
 .header_select {
-  width: 22.5%;
+  width: 25%;
   height: 100%;
   display: flex;
   align-items: center;
   box-sizing: border-box;
+  padding-left: 4%;
   float: left;
-  padding-left: 2%;
 }
-.header_button {
-  justify-content: space-around;
+.header_select span {
+  font-size: 12px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  opacity: 0.8;
+  margin-right: 4%;
+}
+.header_data {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
-  float: right;
+  padding-left: 4%;
+  float: left;
 }
 .el-table__header >>> .el-table tr {
   background: #212121 !important;
@@ -393,7 +474,7 @@ export default {
 .footer {
   width: 100%;
   min-width: 1116px;
-  height: calc(100% - 112px);
+  height: calc(100% - 150px);
   background: #000;
   box-sizing: border-box;
   padding: 16px;

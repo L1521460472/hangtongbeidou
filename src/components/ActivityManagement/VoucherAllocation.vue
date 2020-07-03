@@ -71,7 +71,7 @@
                 :data="dataList"
                 style="width: 100%; height: 100%;"
               >
-                <el-table-column prop="id" min-width="80" label="序号">
+                <el-table-column prop="id" min-width="80" label="序号" align="center">
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 0"
                       >{{ scope.$index + (currentPage - 1) * pagesize + 1 }}
@@ -85,6 +85,7 @@
                   prop="name"
                   min-width="110"
                   label="名称"
+                  align="center"
                   :show-overflow-tooltip="true"
                 >
                   <template slot-scope="scope">
@@ -96,7 +97,7 @@
                     }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" min-width="80" label="类型">
+                <el-table-column prop="type" min-width="80" label="类型" align="center">
                   <template slot-scope="scope">
                     <span v-if="scope.row.type == 1 && scope.row.status == 0"
                       >代金券</span
@@ -112,6 +113,7 @@
                   prop="denomination"
                   min-width="80"
                   label="面额/元"
+                  align="center"
                 >
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 0">{{
@@ -126,6 +128,7 @@
                   prop="useThreshold"
                   min-width="80"
                   label="使用门槛"
+                  align="center"
                 >
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 0">{{
@@ -136,7 +139,7 @@
                     }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="status" min-width="80" label="状态">
+                <el-table-column prop="status" min-width="80" label="状态" align="center">
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 0">启用</span>
                     <span v-if="scope.row.status == 1" style="opacity: 0.4;"
@@ -148,6 +151,7 @@
                   prop="expireTime"
                   min-width="140"
                   label="有效期"
+                  align="center"
                 >
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 0">{{
@@ -158,7 +162,7 @@
                     }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="number" min-width="80" label="数量/张">
+                <el-table-column prop="number" min-width="80" label="数量/张" align="center">
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 0">{{
                       scope.row.number
@@ -173,6 +177,7 @@
                   min-width="120"
                   :show-overflow-tooltip="true"
                   label="描述"
+                  align="center"
                 >
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 0">{{
@@ -187,6 +192,7 @@
                   prop="createTime"
                   min-width="140"
                   label="创建时间"
+                  align="center"
                 >
                   <template slot-scope="scope">
                     <span v-if="scope.row.status == 0">{{
@@ -197,7 +203,7 @@
                     }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column min-width="80" label="操作">
+                <el-table-column min-width="80" label="操作" align="center">
                   <template slot-scope="scope">
                     <span
                       class="disparticulars"
@@ -345,15 +351,12 @@ export default {
     },
     reset() {
       this.getData();
-      this.value02 = '';
-      this.value_start = '';
-      this.value_end = '';
+      
     },
     creation() {
       this.$router.push("CreateVoucher");
     },
     handleDisable(index, row) {
-      // var _this = this;
       // console.log(index,row);
       if (row.status == 0) {
         this.$confirm("确定要禁用当前产品？", "提示", {
@@ -401,7 +404,7 @@ export default {
           .then(() => {
             axios({
               method: "post",
-              url: "/rest/chargeapi/voucherSetController/enableOrdisable",
+              url: "/rest/chargeapi/voucherSetController/enableOrdisable",  
               headers: {
                 Authorization: getCookie(1001),
               },
@@ -450,6 +453,9 @@ export default {
           this.total = result.data.data.totalCount;
           this.pagesize = result.data.data.pageSize;
           this.currentPage = result.data.data.pageNo;
+          this.value02 = '';
+          this.value_start = '';
+          this.value_end = '';
         })
         .catch((err) => {
           this.loading = false;
@@ -466,16 +472,16 @@ export default {
         },
         data: {
           status:status,
-          startTime: start,
-          endTime: end,
-          pageNo: 1,
+          startTime: start == "" ? "" : start + " 00:00:00",
+          endTime: end == "" ? "" : end + " 23:59:59",
+          pageNo: this.currentPage,
           pageSize: val,
         },
       })
         .then((result) => {
           // console.log(result.data)
           this.loading = false;
-          this.dataList = result.data.data.recordList;
+          this.dataList = result.data.data.recordList;  
           this.total = result.data.data.totalCount;
           this.pagesize = result.data.data.pageSize;
           this.currentPage = result.data.data.pageNo;
@@ -495,8 +501,8 @@ export default {
         },
         data: {
           status:status,
-          startTime: start,
-          endTime: end,
+          startTime: start == "" ? "" : start + " 00:00:00",
+          endTime: end == "" ? "" : end + " 23:59:59",
           pageNo: val,
           pageSize: this.pagesize,
         },
@@ -665,12 +671,12 @@ export default {
 .isparticulars {
   color: #db9d4f;
   cursor: pointer;
-  margin-right: 25px;
+  /* margin-right: 25px; */
 }
 .disparticulars {
   color: #ff4141;
   cursor: pointer;
-  margin-right: 25px;
+  /* margin-right: 25px; */
 }
 .message {
   color: #51d4ff;
